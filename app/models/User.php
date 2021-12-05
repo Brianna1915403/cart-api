@@ -33,10 +33,16 @@ class User extends \App\core\Model {
             $stmt->execute(["email"=>$email, "password"=>$password, "license_key"=>$license_key]);
         }
 
-        function update($email, $password) {
-            $query = "UPDATE user SET email = :email, password = :password";
-            $stmt = self::$connection->prepare($query);
-            $stmt->execute(["email"=>$email, "password"=>$password]);
+        function update($client_id, $email, $password) {
+            if (!$password) {
+                $query = "UPDATE user SET email = :email WHERE client_ID = :client_id";
+                $stmt = self::$connection->prepare($query);
+                $stmt->execute(["client_id"=>$client_id, "email"=>$email]);
+            } else {
+                $query = "UPDATE user SET email = :email, password = :password  WHERE client_ID = :client_id";
+                $stmt = self::$connection->prepare($query);
+                $stmt->execute(["client_id"=>$client_id, "email"=>$email, "password"=>$password]);
+            }
         }
 
         //TODO: Delete method

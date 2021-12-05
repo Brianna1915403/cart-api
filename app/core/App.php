@@ -13,9 +13,10 @@ class App {
         public function __construct() {
             
             $this->request = new Request();   
-            // var_dump($this->request->url_parameters);         
+
             $this->set_controller();
             $this->set_method();
+            $this->set_params();
 
             if ($this->controller) {
                 $this->controller = new $this->controller();
@@ -31,7 +32,10 @@ class App {
                             case "POST": // Create a user
                                 if (!$this->request->auth) {
                                     if (isset($this->request->payload['email']) && isset($this->request->payload['password'])) {
-                                        $this->controller->insert($this->request->payload['email'], $this->request->payload['password']);
+                                        $this->controller->insert(
+                                            $this->request->payload['email'], 
+                                            $this->request->payload['password']
+                                        );
                                     } else {
                                         include("app/views/errors/400.php");
                                     }
@@ -39,11 +43,23 @@ class App {
                                     include("app/views/errors/400.php");
                                 }
                                 break;
-                            case "PATCH": // Update a user
-                                if ($this->request->auth && $this->verify_authentication()) {
-                                    // TODO: Upon changing either password or email check if credentials match
-                                    // TODO: Need to figure out if user is trying to change email or password
-                                    echo "Continue w/ PATCH";
+                            case "PATCH": // Update a user's email and password
+                                if ($this->request->auth && $this->verify_authentication()) {                                    
+                                    if (isset($this->request->payload['email']) && isset($this->request->payload['old_password']) && isset($this->request->payload['new_password'])) {
+                                        $this->controller->update_password(
+                                            $this->request->payload['email'], 
+                                            $this->request->payload['old_password'], 
+                                            $this->request->payload['new_password']
+                                        );
+                                    } else if (isset($this->request->payload['old_email']) && isset($this->request->payload['new_email']) && isset($this->request->payload['password'])) {
+                                        $this->controller->update_email(
+                                            $this->request->payload['password'], 
+                                            $this->request->payload['old_email'], 
+                                            $this->request->payload['new_email']
+                                        );
+                                    }else {
+                                        include("app/views/errors/400.php");
+                                    }
                                 } else {
                                     include("app/views/errors/401.php");
                                 }
@@ -96,7 +112,8 @@ class App {
         }
 
         function set_params() {
-
+            $this->params = $this->request->url_parameters;
+            unset($this->request->url_parameters);
         }
     }
 
