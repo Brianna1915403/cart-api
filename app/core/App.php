@@ -2,46 +2,58 @@
     namespace App\core;
     
     class App {
-        protected $controller = 'App\\controllers\\APIController';
+        protected $controller;
         protected $method = 'index';
         protected $params = [];
 
+        private $request;
+
         public function __construct() {
-            $url = $this->parseUrl();
+            // header("Content-Type: application/json");
             
-            if (isset($url[0])) {
-                if (file_exists('app/controllers/' . $url[0] . 'Controller.php')) {
-                    $this->controller = 'App\\controllers\\' . $url[0] . 'Controller';
+            $this->request = new Request();            
+            $this->set_controller();
+
+            if ($this->controller) {
+                $this->controller = new $this->controller();
+                $controller = get_class($this->controller);
+
+                if ($controller == "App\\controllers\\CartController") {
+                    echo "CartController";
+                } else if ($controller == "App\\controllers\\ItemController") {
+                    echo "ItemController";
+                } else if ($controller == "App\\controllers\\UserController") {
+                    echo "UserController";
                 }
-                unset($url[0]);
             }
+            // var_dump($keys);
 
-            $this->controller = new $this->controller();
+            // if (isset($url[1])) {
+            //     if (method_exists($this->controller, $url[1])) {
+            //         $this->method = $url[1];
+            //     }
+            //     unset($url[1]);
+            // }
 
-            if (isset($url[1])) {
-                if (method_exists($this->controller, $url[1])) {
-                    $this->method = $url[1];
-                }
-                unset($url[1]);
-            }
+            // $this->params = $url? array_values($url) : [];
 
-            $reflection = new \ReflectionObject($this->controller);
-            $controllerAttributes = $reflection->getAttributes();
-            $methodAttributes = $reflection->getMethod($this->method)->getAttributes();
-            $filters = array_values(array_filter(array_merge($controllerAttributes, $methodAttributes)));
-            foreach($filters as $filter) {
-                $filter = $filter->newInstance();
-                $filter->execute();
-            }
-
-            $this->params = $url? array_values($url) : [];
-
-            call_user_func_array([$this->controller, $this->method], $this->params);
+            // call_user_func_array([$this->controller, $this->method], $this->params);
         }
 
-        function parseUrl() {
-            if(isset($_GET['url'])) {
-                return explode('/', filter_var(rtrim($_GET['url'], '/'), FILTER_SANITIZE_URL));
+        function verify_authentication() {
+
+        }
+
+        function set_controller() {
+            $keys = $this->request->url_parameters;
+            // var_dump($keys);
+            if (isset($keys['controller'])) {
+                if (file_exists('app/controllers/' . ucfirst($keys['controller']) . 'Controller.php')) {
+                    $this->controller = 'App\\controllers\\' . $keys['controller'] . 'Controller';
+                } else {
+                    include("app/views/errors/404.php");
+                }
+                unset($keys['controller']);
             }
         }
     }

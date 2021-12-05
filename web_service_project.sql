@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 01, 2021 at 03:25 PM
+-- Generation Time: Dec 03, 2021 at 05:06 PM
 -- Server version: 10.4.17-MariaDB
 -- PHP Version: 8.0.1
 
@@ -20,6 +20,8 @@ SET time_zone = "+00:00";
 --
 -- Database: `web_service_project`
 --
+CREATE DATABASE IF NOT EXISTS `web_service_project` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE `web_service_project`;
 
 -- --------------------------------------------------------
 
@@ -35,6 +37,35 @@ CREATE TABLE `cart` (
   `status` varchar(250) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `item`
+--
+
+CREATE TABLE `item` (
+  `item_ID` int(11) NOT NULL,
+  `item_name` varchar(250) NOT NULL,
+  `description` varchar(250) NOT NULL,
+  `price` int(11) NOT NULL,
+  `picture` varchar(250) NOT NULL,
+  `tag` varchar(250) NOT NULL,
+  `stock` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `user`
+--
+
+CREATE TABLE `user` (
+  `client_ID` int(11) NOT NULL,
+  `email` varchar(250) NOT NULL,
+  `password` varchar(250) NOT NULL,
+  `license_key` varchar(250) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 --
 -- Indexes for dumped tables
 --
@@ -48,6 +79,18 @@ ALTER TABLE `cart`
   ADD KEY `Item_to_cart` (`item_id`);
 
 --
+-- Indexes for table `item`
+--
+ALTER TABLE `item`
+  ADD PRIMARY KEY (`item_ID`);
+
+--
+-- Indexes for table `user`
+--
+ALTER TABLE `user`
+  ADD PRIMARY KEY (`client_ID`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -56,6 +99,18 @@ ALTER TABLE `cart`
 --
 ALTER TABLE `cart`
   MODIFY `cart_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `item`
+--
+ALTER TABLE `item`
+  MODIFY `item_ID` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `user`
+--
+ALTER TABLE `user`
+  MODIFY `client_ID` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- Constraints for dumped tables

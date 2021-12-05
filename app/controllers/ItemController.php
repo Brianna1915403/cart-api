@@ -1,9 +1,10 @@
 <?php
     namespace App\controllers;
 
-    class APIController extends \App\core\Controller {
+    class ItemController extends \App\core\Controller {
         
         function index() {
+            echo "ItemController";
             $this->view('index');
         }
     }        

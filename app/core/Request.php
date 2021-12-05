@@ -1,4 +1,7 @@
 <?php
+
+    namespace App\core;
+
     class Request{
         public $verb;
         public $url_parameters;
@@ -15,7 +18,7 @@
 
             $this->accept = $_SERVER["HTTP_ACCEPT"];
 
-            $this->content_type = $_SERVER["CONTENT_TYPE"];
+            // $this->content_type = $_SERVER["CONTENT_TYPE"];
             //$this->tokenAuth = preg_replace('/Bearer\s/', '', $_SERVER['HTTP_AUTHORIZATION']);
         }
     }// end Request Class
