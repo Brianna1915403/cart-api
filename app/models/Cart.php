@@ -9,7 +9,7 @@
 
         function getByID($id) {
             $query = "SELECT * FROM cart WHERE cart_id = :id";
-            $stmt = $this->db_connection->prepare($query);
+            $stmt = self::$connection->prepare($query);
             $stmt->execute(["id"=>$id]);
 
             return $stmt->fetch();

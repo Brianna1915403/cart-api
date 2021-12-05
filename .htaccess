@@ -5,11 +5,11 @@ RewriteBase /cart-shop/
 
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_METHOD} ^(POST|GET|HEAD|PROPFIND|OPTIONS)$
+# RewriteCond %{REQUEST_METHOD} ^(POST|GET|PATCH|DELETE)$
 
 #route -> cart-shop/api/cart/{id | all} || cart-shop/api/item/{id | all}
 RewriteCond %{QUERY_STRING} ^(.*)$
-RewriteRule ^(api/?)([^/]+)/([^/]+) index.php?controller=$2&method=$3&%1 [L]
+RewriteRule ^(api/?)([^/]+)/?([^/]+)? index.php?controller=$2&method=$3&%1 [L]
 RewriteCond %{QUERY_STRING} ^(.*)$
 RewriteRule ^([^/]+)/ $1?%1 [L]
 
