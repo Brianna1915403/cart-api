@@ -2,7 +2,7 @@
 
     namespace App\core;
 
-    class Request{
+    class Request {
         public $verb;
         public $url_parameters;
         public $payload;

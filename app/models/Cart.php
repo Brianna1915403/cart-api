@@ -59,7 +59,7 @@
         function removeItemInCart($cartID, $itemID, $userID){
             $query = "DELETE FROM cart WHERE cart_id = :cart_id, item_id = :item_id, user_id = :user_id";
             $stmt = self::$connection->prepare($query);
-            $stmt->execute(["cart_id"=>$cartID, "item_id"=>$itemID, "user_id"=>$user_id]);
+            $stmt->execute(["cart_id"=>$cartID, "item_id"=>$itemID, "user_id"=>$userID]);
 
             return $stmt->fetch();
         }

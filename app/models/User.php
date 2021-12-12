@@ -1,11 +1,11 @@
 <?php 
     namespace App\models;
 
-use PDO;
+    use PDO;
 
-class User extends \App\core\Model {
+    class User extends \App\core\Model {
 
-        // DB Fields: client_ID | email | password | license_key
+        // DB Fields: user_id | email | password | license_key
 
         public function __construct() { 
             parent::__construct();
@@ -33,15 +33,15 @@ class User extends \App\core\Model {
             $stmt->execute(["email"=>$email, "password"=>$password, "license_key"=>$license_key]);
         }
 
-        function update($client_id, $email, $password) {
+        function update($user_id, $email, $password) {
             if (!$password) {
-                $query = "UPDATE user SET email = :email WHERE client_ID = :client_id";
+                $query = "UPDATE user SET email = :email WHERE user_id = :user_id";
                 $stmt = self::$connection->prepare($query);
-                $stmt->execute(["client_id"=>$client_id, "email"=>$email]);
+                $stmt->execute(["user_id"=>$user_id, "email"=>$email]);
             } else {
-                $query = "UPDATE user SET email = :email, password = :password  WHERE client_ID = :client_id";
+                $query = "UPDATE user SET email = :email, password = :password  WHERE user_id = :user_id";
                 $stmt = self::$connection->prepare($query);
-                $stmt->execute(["client_id"=>$client_id, "email"=>$email, "password"=>$password]);
+                $stmt->execute(["user_id"=>$user_id, "email"=>$email, "password"=>$password]);
             }
         }
 

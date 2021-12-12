@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.0.4
+-- version 5.1.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 03, 2021 at 05:06 PM
--- Server version: 10.4.17-MariaDB
--- PHP Version: 8.0.1
+-- Generation Time: Dec 12, 2021 at 08:58 PM
+-- Server version: 10.4.21-MariaDB
+-- PHP Version: 8.0.11
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -44,14 +44,23 @@ CREATE TABLE `cart` (
 --
 
 CREATE TABLE `item` (
-  `item_ID` int(11) NOT NULL,
+  `item_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
   `item_name` varchar(250) NOT NULL,
   `description` varchar(250) NOT NULL,
-  `price` int(11) NOT NULL,
+  `price` decimal(65,2) NOT NULL,
   `picture` varchar(250) NOT NULL,
   `tag` varchar(250) NOT NULL,
   `stock` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `item`
+--
+
+INSERT INTO `item` (`item_id`, `user_id`, `item_name`, `description`, `price`, `picture`, `tag`, `stock`) VALUES
+(1, 1, 'An Item', 'An item that is being sold in this shop.', '9.99', '0000_picture', 'item', 100),
+(2, 2, 'An Alternative Item', 'An item that is being sold in an alternative shop.', '8.75', '0001_picture', 'item, alternative', 83);
 
 -- --------------------------------------------------------
 
@@ -60,11 +69,20 @@ CREATE TABLE `item` (
 --
 
 CREATE TABLE `user` (
-  `client_ID` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
   `email` varchar(250) NOT NULL,
   `password` varchar(250) NOT NULL,
   `license_key` varchar(250) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `user`
+--
+
+INSERT INTO `user` (`user_id`, `email`, `password`, `license_key`) VALUES
+(1, 'email@domain.ext', '$2y$10$FmF8eWBhixU.jtJqbyuiHuPYt.WxvtEbMWbqm9B3NCKG.drVVw5kO', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJrZXkiOiJkNjNiMC5OemsyWWpsbFptVXhZbVl5T0RkaU9UZzNPVFprTlRReU56WmhZemMzWldJIn0.Fu7wZjPoIQ-vj6FF1zqYlFSfmuI2pnYyvimAM38qGzA'),
+(2, 'email_1@domain.ext', '$2y$10$EjIqiEpfkeUygYyT9g7TMudRjgm4/nDueqj9APIyOtNWirpvCI6Fu', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJrZXkiOiJkNjJkNC5ZVE14WTJJNVl6Rm1aR1EyTldWa1pETTJNakJoTWpGaU1XRTNNREV5Wm1FIn0.zOQsOO8S6PJVH2RMUyuKwgcK-wYs98eELNUjylz75JA'),
+(3, 'email_2@domain.ext', '$2y$10$VejA.B8MpEKmA/WyTBo7gOyytF5LZ/wJPr67PEXXzfThepnGujpFS', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJrZXkiOiJlZTIxNi5aRFU1TURBeU1EWXlNbVkzTnpjek1tSmpPVFV6WVdOak1XTm1PVFppWm1JIn0.GVFAfiik8vRGf827UvwjYtL2AOhDj5uXtZ5mUEGzWRE');
 
 --
 -- Indexes for dumped tables
@@ -82,13 +100,17 @@ ALTER TABLE `cart`
 -- Indexes for table `item`
 --
 ALTER TABLE `item`
-  ADD PRIMARY KEY (`item_ID`);
+  ADD PRIMARY KEY (`item_id`),
+  ADD UNIQUE KEY `picture` (`picture`),
+  ADD KEY `User_to_Item` (`user_id`);
 
 --
 -- Indexes for table `user`
 --
 ALTER TABLE `user`
-  ADD PRIMARY KEY (`client_ID`);
+  ADD PRIMARY KEY (`user_id`),
+  ADD UNIQUE KEY `email` (`email`),
+  ADD UNIQUE KEY `license_key` (`license_key`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -104,13 +126,13 @@ ALTER TABLE `cart`
 -- AUTO_INCREMENT for table `item`
 --
 ALTER TABLE `item`
-  MODIFY `item_ID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `client_ID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- Constraints for dumped tables
@@ -121,7 +143,13 @@ ALTER TABLE `user`
 --
 ALTER TABLE `cart`
   ADD CONSTRAINT `Item_to_cart` FOREIGN KEY (`item_id`) REFERENCES `item` (`item_ID`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `User_to_cart` FOREIGN KEY (`user_id`) REFERENCES `user` (`client_ID`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `User_to_cart` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `item`
+--
+ALTER TABLE `item`
+  ADD CONSTRAINT `User_to_Item` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

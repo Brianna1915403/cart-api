@@ -20,6 +20,14 @@
             return preg_match('/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix', $email);
         }
 
+        function get_user_by_token($token) {
+            return $this->verify_auth($token);
+        }
+
+        function get() {
+            $this->view('index', ['items'=>'/cart-shop/api/item/', 'carts'=>'/cart-shop/api/cart/']);
+        }
+
         function insert($email, $password) {
             if ($this->verify_email(strtolower($email)) && !$this->user->getByEmail(strtolower($email))) {   
                 $api_key = Token::get_api_key();
@@ -38,7 +46,7 @@
             if ($user_data && password_verify($old_password, $user_data['password'])) {
                 $password = password_hash($new_password, PASSWORD_DEFAULT);
 
-                $this->user->update($user_data['client_ID'],strtolower($email), $password);
+                $this->user->update($user_data['user_id'],strtolower($email), $password);
                 $this->view('index', ['status' => http_response_code()]);
             } else {
                 $this->view('errors/401');
@@ -49,7 +57,7 @@
             $user_data = $this->user->getByEmail(strtolower($old_email));
             if ($user_data && password_verify($password, $user_data['password'])) {
                 if ($this->verify_email(strtolower($new_email)) && !$this->user->getByEmail(strtolower($new_email))) {
-                    $this->user->update($user_data['client_ID'], strtolower($new_email), null);
+                    $this->user->update($user_data['user_id'], strtolower($new_email), null);
                     
                     $this->view('index', ['status' => http_response_code()]);
                 } else {
