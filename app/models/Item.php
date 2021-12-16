@@ -26,20 +26,51 @@
             $stmt->execute(["user_id" => $user_id, "item_name" => $name, "description" => $desc, "price" => $price, "picture" => $picture, "tag" => $tag, "stock" => $stock]);
         }
 
-        // function update($client_id, $email, $password) {
-        //     if (!$password) {
-        //         $query = "UPDATE user SET email = :email WHERE client_ID = :client_id";
-        //         $stmt = self::$connection->prepare($query);
-        //         $stmt->execute(["client_id"=>$client_id, "email"=>$email]);
-        //     } else {
-        //         $query = "UPDATE user SET email = :email, password = :password  WHERE client_ID = :client_id";
-        //         $stmt = self::$connection->prepare($query);
-        //         $stmt->execute(["client_id"=>$client_id, "email"=>$email, "password"=>$password]);
-        //     }
-        // }
+        // --- UPDATE START ---
 
-        //TODO: Delete method
-        
+        function update_item_name($item_id, $item_name) {
+            $query = "UPDATE item SET item_name = :item_name WHERE item_id = :item_id";
+            $stmt = self::$connection->prepare($query);
+            $stmt->execute(["item_id" => $item_id, "item_name" => $item_name]);
+        }
+
+        function update_description($item_id, $description) {
+            $query = "UPDATE item SET description = :description WHERE item_id = :item_id";
+            $stmt = self::$connection->prepare($query);
+            $stmt->execute(["item_id" => $item_id, "description" => $description]);
+        }
+
+        function update_price($item_id, $price) {
+            $query = "UPDATE item SET price = :price WHERE item_id = :item_id";
+            $stmt = self::$connection->prepare($query);
+            $stmt->execute(["item_id" => $item_id, "price" => $price]);
+        }
+
+        function update_picture($item_id, $picture) {
+            $query = "UPDATE item SET picture = :picture WHERE item_id = :item_id";
+            $stmt = self::$connection->prepare($query);
+            $stmt->execute(["item_id" => $item_id, "picture" => $picture]);
+        }
+
+        function update_tag($item_id, $tag) {
+            $query = "UPDATE item SET tag = :tag WHERE item_id = :item_id";
+            $stmt = self::$connection->prepare($query);
+            $stmt->execute(["item_id" => $item_id, "tag" => $tag]);
+        }
+
+        function update_stock($item_id, $stock) {
+            $query = "UPDATE item SET stock = :stock WHERE item_id = :item_id";
+            $stmt = self::$connection->prepare($query);
+            $stmt->execute(["item_id" => $item_id, "stock" => $stock]);
+        }
+
+        // --- UPDATE END ---
+
+        function delete($item_id) {
+            $query = "DELETE FROM item WHERE item_id = :item_id";
+            $stmt = self::$connection->prepare($query);
+            $stmt->execute(["item_id" => $item_id]);
+        }
     }
 
 ?>

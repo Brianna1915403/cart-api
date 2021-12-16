@@ -48,3 +48,8 @@ Thumbs.db
 *.mov
 *.wmv
 
+# Enviroment variable files
+.env
+
+# Todo file
+*.todo

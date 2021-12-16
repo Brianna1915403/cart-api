@@ -27,7 +27,7 @@
                 case "DELETE": parse_str(file_get_contents("php://input"), $this->payload); break;
             }
             //$this->content_type = $_SERVER["CONTENT_TYPE"];
-            //$this->tokenAuth = preg_replace('/Bearer\s/', '', $_SERVER['HTTP_AUTHORIZATION']);
+            // $this->tokenAuth = preg_replace('/Bearer\s/', '', $_SERVER['HTTP_AUTHORIZATION']);
         }
 
         private function get_auth() {

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 12, 2021 at 08:58 PM
+-- Generation Time: Dec 16, 2021 at 05:33 AM
 -- Server version: 10.4.21-MariaDB
 -- PHP Version: 8.0.11
 
@@ -47,11 +47,11 @@ CREATE TABLE `item` (
   `item_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `item_name` varchar(250) NOT NULL,
-  `description` varchar(250) NOT NULL,
-  `price` decimal(65,2) NOT NULL,
-  `picture` varchar(250) NOT NULL,
-  `tag` varchar(250) NOT NULL,
-  `stock` int(11) NOT NULL
+  `description` varchar(250) DEFAULT NULL,
+  `price` decimal(65,2) DEFAULT NULL,
+  `picture` varchar(250) DEFAULT NULL,
+  `tag` varchar(250) DEFAULT NULL,
+  `stock` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -59,8 +59,8 @@ CREATE TABLE `item` (
 --
 
 INSERT INTO `item` (`item_id`, `user_id`, `item_name`, `description`, `price`, `picture`, `tag`, `stock`) VALUES
-(1, 1, 'An Item', 'An item that is being sold in this shop.', '9.99', '0000_picture', 'item', 100),
-(2, 2, 'An Alternative Item', 'An item that is being sold in an alternative shop.', '8.75', '0001_picture', 'item, alternative', 83);
+(1, 1, 'Sport Socks - 6 pack', 'Sporty socks are a great gift for any friend or family member wanting to get healthy for the holidays. After all how can one justify wearing such sporty socks, while neglecting their new years resolution!?', '3.99', '8d5a1_sportsocks6pack.png', NULL, 0),
+(2, 1, 'Cat Sock - Pink', 'The purrfect set for you feline-inclined people. ', '24.99', NULL, NULL, 0);
 
 -- --------------------------------------------------------
 

@@ -1,9 +1,9 @@
 <?php
     namespace App\core;
 
-use App\controllers\UserController;
+    use App\controllers\UserController;
 
-class App {
+    class App {
         protected $controller;
         protected $method = '';
         protected $params = [];
@@ -12,9 +12,7 @@ class App {
 
         public function __construct() {
             
-            $this->request = new Request();   
-            // var_dump($this->request->url_parameters);
-
+            $this->request = new Request();            
 
             $this->set_controller();
             $this->set_method();
@@ -27,68 +25,7 @@ class App {
                 if ($controller == "App\\controllers\\CartController") {
                     echo "CartController";
                 } else if ($controller == "App\\controllers\\ItemController") {
-                    switch ($this->request->verb) {
-                        case "GET": 
-                            $user = $this->verify_authentication();
-                            if ($this->request->auth && $user) {  
-                                if ($this->method) {
-                                    $this->controller->get_one($user['user_id'], intval($this->method));
-                                } else {
-                                    $this->controller->get_all($user['user_id']);
-                                }
-                            }
-                            break;
-                        case "POST": // Create an item
-                            if ($this->request->auth) {
-                                $user = $this->verify_authentication();
-                                if (isset($this->request->payload['item_name']) && 
-                                    isset($this->request->payload['description']) &&
-                                    isset($this->request->payload['price']) &&
-                                    isset($this->request->payload['picture']) &&
-                                    isset($this->request->payload['tag']) &&
-                                    isset($this->request->payload['stock']) &&
-                                    $user)
-                                {
-                                    $this->controller->insert(
-                                        $user['user_id'],
-                                        $this->request->payload['item_name'], 
-                                        $this->request->payload['description'],
-                                        $this->request->payload['price'],
-                                        $this->request->payload['picture'],
-                                        $this->request->payload['tag'],
-                                        $this->request->payload['stock']
-                                    );
-                                } else {
-                                    include("app/views/errors/400.php");
-                                }
-                            } else {
-                                include("app/views/errors/400.php");
-                            }
-                            break;
-                        case "PATCH": // Update a user's email and password
-                            if ($this->request->auth && $this->verify_authentication()) {                                    
-                                if (isset($this->request->payload['email']) && isset($this->request->payload['old_password']) && isset($this->request->payload['new_password'])) {
-                                    $this->controller->update_password(
-                                        $this->request->payload['email'], 
-                                        $this->request->payload['old_password'], 
-                                        $this->request->payload['new_password']
-                                    );
-                                } else if (isset($this->request->payload['old_email']) && isset($this->request->payload['new_email']) && isset($this->request->payload['password'])) {
-                                    $this->controller->update_email(
-                                        $this->request->payload['password'], 
-                                        $this->request->payload['old_email'], 
-                                        $this->request->payload['new_email']
-                                    );
-                                }else {
-                                    include("app/views/errors/400.php");
-                                }
-                            } else {
-                                include("app/views/errors/401.php");
-                            }
-                            break;
-                        case "DELETE": echo "DELETE"; break;
-                        default: include("app/views/errors/400.php"); break;
-                    }
+                    $this->item();
                 } else if ($controller == "App\\controllers\\UserController") {                    
                     $this->user();             
                 }
@@ -168,12 +105,96 @@ class App {
                             include("app/views/errors/401.php");
                         }
                         break;
-                    case "DELETE": echo "DELETE"; break;
+                    case "DELETE": echo "DELETE"; break; // TODO: Delete everything related to the user
                     default: include("app/views/errors/400.php"); break;
                 }    
             } else {
                 include("app/views/errors/404.php");
             }  
+        }
+
+        function item() {
+            switch ($this->request->verb) {
+                case "GET": 
+                    $user = $this->verify_authentication();
+                    if ($this->request->auth && $user) { 
+                        if (($this->method != '' || $this->method != null)) {
+                            if (is_numeric($this->method)) {
+                                $this->controller->get_one($user['user_id'], intval($this->method));
+                            } else {
+                                include("app/views/errors/404.php");
+                            }
+                        } else {
+                            $this->controller->get_all($user['user_id']);
+                        }
+                    } else {
+                        include("app/views/errors/401.php");
+                    }
+                    break;
+                case "POST": // Create an item
+                    if ($this->request->auth) {
+                        $user = $this->verify_authentication();
+                        // Do I really need to check if all the fields are set? Yes but in the method call itself
+                        if (isset($this->request->payload['item_name']) && $user) {
+                            $this->controller->insert(
+                                $user['user_id'],
+                                $this->request->payload['item_name'], 
+                                isset($this->request->payload['description']) ? $this->request->payload['description'] : null,
+                                isset($this->request->payload['price']) ? $this->request->payload['price'] : 0.00,
+                                isset($this->request->payload['picture']) ? $this->request->payload['picture'] : null,
+                                isset($this->request->payload['tag']) ? $this->request->payload['tag'] : null,
+                                isset($this->request->payload['stock']) ? $this->request->payload['stock'] : 0,
+                            );
+                        } else {
+                            include("app/views/errors/400.php");
+                        }
+                    } else {
+                        include("app/views/errors/401.php");
+                    }
+                    break;
+                case "PATCH": 
+                    // TODO: Update item fields
+                    // Not all fields are required nor do new/old_field exist
+                    // Overlapp the new version over the old one, any items that are blank or empty
+                    //  just stay as they were.     
+                    if ($this->request->auth) {
+                        $user = $this->verify_authentication();
+                        if (($this->method != '' || $this->method != null) && $user) {
+                            if (is_numeric($this->method)) {
+                                $this->controller->update(
+                                    $user['user_id'],
+                                    intval($this->method),
+                                    isset($this->request->payload['item_name']) ? $this->request->payload['item_name'] : null, 
+                                    isset($this->request->payload['description']) ? $this->request->payload['description'] : null,
+                                    isset($this->request->payload['price']) ? $this->request->payload['price'] : 0.00,
+                                    isset($this->request->payload['picture']) ? $this->request->payload['picture'] : null,
+                                    isset($this->request->payload['tag']) ? $this->request->payload['tag'] : null,
+                                    isset($this->request->payload['stock']) ? $this->request->payload['stock'] : 0,
+                                );
+                            } else {
+                                include("app/views/errors/404.php");
+                            }
+                        } else {
+                            include("app/views/errors/400.php");
+                        }
+                    } else {
+                        include("app/views/errors/400.php");
+                    }            
+                    break;
+                case "DELETE": 
+                    // TODO: Delete item completely
+                    // Should the item id be replaces (i.e., if item #3 is deleted #4 will take it's place)? Yes
+                    if ($this->request->auth) { 
+                        $user = $this->verify_authentication();
+                        if ($user && ($this->method != '' && $this->method != null)) {
+                            $this->controller->delete($user['user_id'], intval($this->method));                                    
+                        } else {
+                            include("app/views/errors/400.php");                                    
+                        }
+                    }
+                    break;
+                default: include("app/views/errors/400.php"); break;
+            }
         }
     }
 
