@@ -23,7 +23,73 @@
                 $controller = get_class($this->controller);
 
                 if ($controller == "App\\controllers\\CartController") {
-                    echo "CartController";
+                    switch ($this->request->verb){
+                        case "GET": // Get the items in the user cart
+                            $user = $this->verify_authentication();
+                            if($this->request->auth && $user){
+                                $this->controller->getAllItemsInCart($user['user_id']);
+                            }
+                            break;
+                        case "POST":// Add an item to the user cart
+                            $user = $this->verify_authentication();
+                            if($this->request->auth){
+                                if (isset($this->request->payload['item_id']) &&
+                                isset($this->request->payload['item_amount']) &&
+                                isset($this->request->payload['status']) &&
+                                $user){
+                                    $this->controller->insert(
+                                        $user['user_id'],
+                                        $this->request->payload['item_id'],
+                                        $this->request->payload['item_amount'],
+                                        $this->request->payload['status']
+                                    );
+                                }else{
+                                    include("app/views/errors/400.php");
+                                }
+                            } else {
+                                include("app/views/errors/400.php");
+                            }
+                            break;
+                        case "PATCH":// update the items info in the cart
+                            if($this->request->auth && $this->verify_authentication()){
+                                if(isset($this->request->payload['amount'])&&
+                                    isset($this->request->payload['cart_id'])){
+                                    $this->controller->updateItemAmount(
+                                        $this->request->payload['cart_id'],
+                                        $this->request->payload['amount']
+                                    );
+                                }else if(isset($this->request->payload['status']) &&
+                                        isset($this->request->payload['cart_id'])){
+                                            $this->controller->updateStatus(
+                                                $this->request->payload['cart_id'],
+                                                $this->request->payload['status']
+                                            );
+                                }else{
+                                    include("app/views/errors/400.php");
+                                }
+                            }else{
+                                include("app/views/errors/400.php");
+                            }
+                        case "DELETE": // delete an item from the cart.
+                            $user = $this->verify_authentication();
+                            if($this->request->auth){
+                                if(isset($this->request->payload['cart_id']) &&
+                                isset($this->request->payload['item_id']) &&
+                                $user){
+                                    $this->controller->delete(
+                                        $this->request->payload['cart_id'],
+                                        $this->request->payload['item_id'],
+                                        $user['user_id']
+                                    );
+                                }else{
+                                    include("app/views/errors/400.php");
+                                }
+                            }else{
+                                include("app/views/errors/400.php");
+                            }
+                            break;
+                        default: include("app/views/errors/400.php");
+                    }
                 } else if ($controller == "App\\controllers\\ItemController") {
                     $this->item();
                 } else if ($controller == "App\\controllers\\UserController") {                    

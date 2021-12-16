@@ -1,18 +1,20 @@
 <?php
     namespace App\controllers;
 
+    use App\models\Cart;
+
     class CartController extends \App\core\Controller {
         
         private $cart;
 
         function __construct() {$this->cart = new Cart();}
         
-        function getAllItemsInCart($userID){
-            return $this->cart->getAllItems($userID);
+        function getAllFromUser($userID){
+            return $this->cart->getAllFromUser($userID);
         }
 
-        function addItemInCart($userID, $itemID, $itemAmount, status){
-            return $this->cart->addItem($userID, $itemID, $itemAmount, status);
+        function insert($userID, $itemID, $itemAmount, $status){
+            return $this->cart->insert($userID, $itemID, $itemAmount, $status);
         }
 
         function updateItemAmountInCart($cartID, $itemAmount){
@@ -23,8 +25,8 @@
             return $this->cart->updateStatus($cartID, $status);
         }
         
-        function removeItemInCart($cartID, $itemID, $userID){
-            return $this->cart->removeItem($cartID, $itemID, $userID);
+        function delete($cartID, $itemID, $userID){
+            return $this->cart->delete($cartID, $itemID, $userID);
         }
 
         function index() {

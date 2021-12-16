@@ -23,7 +23,7 @@
             return $stmt->fetchAll(\PDO::FETCH_ASSOC);
         }
 
-        function getAllItems($userID){
+        function getAllFromUser($userID){
             $query = "SELECT * FROM cart WHERE user_id = :user_ID";
             $stmt = self::$connection->prepare($query);
             $stmt->execute(["user_ID"=>$userID]);
@@ -31,9 +31,9 @@
             return $stmt->fetch();
         }
 
-        function addItem($userID, $itemID, $itemAmount, $status){
+        function insert($userID, $itemID, $itemAmount, $status){
             $query = "INSERT INTO cart(user_id, item_id, item_amount, status)
-                      VALUES(:user_ID, :item_ID, :item_amount, :status)";
+                        VALUES(:user_ID, :item_ID, :item_amount, :status)";
             $stmt = self::$connection->prepare($query);
             $stmt->execute(["user_ID"=>$userID, "item_ID"=>$itemID, "item_amount"=>$itemAmount, "status"=>$status]);
 
@@ -56,7 +56,7 @@
             return $stmt->fetch();
         }
 
-        function removeItemInCart($cartID, $itemID, $userID){
+        function delete($cartID, $itemID, $userID){
             $query = "DELETE FROM cart WHERE cart_id = :cart_id, item_id = :item_id, user_id = :user_id";
             $stmt = self::$connection->prepare($query);
             $stmt->execute(["cart_id"=>$cartID, "item_id"=>$itemID, "user_id"=>$userID]);
