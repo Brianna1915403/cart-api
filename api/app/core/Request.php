@@ -18,8 +18,8 @@
             parse_str($_SERVER["QUERY_STRING"], $this->url_parameters);
 
             $this->accept = $_SERVER["HTTP_ACCEPT"];
-            // $this->auth = $this->get_auth();
-            $this->auth = preg_replace('/Bearer\s/', '', $_SERVER['HTTP_AUTHORIZATION']);
+            $this->auth = $this->get_auth();
+            // $this->auth = preg_replace('/Bearer\s/', '', $_SERVER['HTTP_AUTHORIZATION']);
             
             switch ($this->verb) {
                 case "POST": $this->payload = $_POST; $this->content_type = $_SERVER["CONTENT_TYPE"]; break;
