@@ -86,7 +86,7 @@
             // Unseting the user_id so the user does not have access to critical database information.
             for ($i = 0; $i < count($items); ++$i) {
                 $items[$i]['item_id'] = $i;
-                unset($items[$i]['user_id']);
+                unset($items[$i]['user_id']); // This is dumb... I could have just changed the query...
                 if (!is_null($items[$i]['picture'])) {
                     $this->get_from_cdn($items[$i]);   
                 }

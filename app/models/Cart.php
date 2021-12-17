@@ -1,6 +1,8 @@
 <?php 
     namespace App\models;
 
+    use PDO;
+
     class Cart extends \App\core\Model {
 
         public function __construct() { 
@@ -20,7 +22,7 @@
             $stmt = self::$connection->prepare($query);
             $stmt->execute();
 
-            return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
 
         function getAllFromUser($userID){
@@ -28,40 +30,42 @@
             $stmt = self::$connection->prepare($query);
             $stmt->execute(["user_ID"=>$userID]);
 
-            return $stmt->fetch();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
-
-        function insert($userID, $itemID, $itemAmount, $status){
-            $query = "INSERT INTO cart(user_id, item_id, item_amount, status)
-                        VALUES(:user_ID, :item_ID, :item_amount, :status)";
+        
+        function getByUserID($user_id){
+            $query = "SELECT * FROM cart WHERE user_id = :user_id";
             $stmt = self::$connection->prepare($query);
-            $stmt->execute(["user_ID"=>$userID, "item_ID"=>$itemID, "item_amount"=>$itemAmount, "status"=>$status]);
+            $stmt->execute(["user_id"=>$user_id]);
 
-            return $stmt->fetch();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
 
-        function updateItemAmount($cartID, $itemAmount){
-            $query = "UPDATE cart SET item_amount = :item_amount WHERE cart_id = :cart_id";
+        function insert($user_id, $item_id, $item_amount, $status, $client_id){
+            $query = "INSERT INTO cart(user_id, item_ids, item_amounts, status, client_id)
+                        VALUES(:user_id, :item_id, :item_amount, :status, :client_id)";
             $stmt = self::$connection->prepare($query);
-            $stmt->execute(["item_amount"=>$itemAmount, "cart_id"=>$cartID]);
+            $stmt->execute(["user_id"=>$user_id, "item_id"=>$item_id, "item_amount"=>$item_amount, "status"=>$status, "client_id"=>$client_id]);
 
             return $stmt->fetch();
         }
 
-        function updateStatus($cartID, $status){
+        function update_contents($cart_id, $item_ids, $item_amounts) {
+            $query = "UPDATE cart SET item_ids = :item_ids, item_amounts = :item_amounts WHERE cart_id = :cart_id";
+            $stmt = self::$connection->prepare($query);
+            $stmt->execute(["cart_id"=>$cart_id, "item_ids"=>$item_ids, "item_amounts"=>$item_amounts]);
+        }
+
+        function update_status($cart_id, $status){
             $query = "UPDATE cart SET status = :status WHERE cart_id = :cart_id";
             $stmt = self::$connection->prepare($query);
-            $stmt->execute(["status"=>$status, "cart_id"=>$cartID]);
-            
-            return $stmt->fetch();
+            $stmt->execute(["status"=>$status, "cart_id"=>$cart_id]);
         }
 
-        function delete($cartID, $itemID, $userID){
-            $query = "DELETE FROM cart WHERE cart_id = :cart_id, item_id = :item_id, user_id = :user_id";
+        function delete($cart_id){
+            $query = "DELETE FROM cart WHERE cart_id = :cart_id";
             $stmt = self::$connection->prepare($query);
-            $stmt->execute(["cart_id"=>$cartID, "item_id"=>$itemID, "user_id"=>$userID]);
-
-            return $stmt->fetch();
+            $stmt->execute(["cart_id"=>$cart_id]);
         }
     }
 
