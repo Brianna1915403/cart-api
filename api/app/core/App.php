@@ -63,15 +63,16 @@
         }
 
         function user() {
+            $user = $this->verify_authentication();
             if ($this->method == "") {
                 switch ($this->request->verb) {
                     case "GET": 
-                        if ($this->request->auth && $this->verify_authentication()) {  
+                        if ($this->request->auth && $user) {  
                             $this->controller->get();
                         }
                         break;
                     case "POST": // Create a user
-                        if (!$this->request->auth) {
+                        if (!$this->request->auth && $user) {
                             if (isset($this->request->payload['email']) && isset($this->request->payload['password'])) {
                                 $this->controller->insert(
                                     $this->request->payload['email'], 
@@ -85,7 +86,7 @@
                         }
                         break;
                     case "PATCH": // Update a user's email and password
-                        if ($this->request->auth && $this->verify_authentication()) {                                    
+                        if ($this->request->auth && $user) {                                    
                             if (isset($this->request->payload['email']) && isset($this->request->payload['old_password']) && isset($this->request->payload['new_password'])) {
                                 $this->controller->update_password(
                                     $this->request->payload['email'], 
@@ -114,9 +115,9 @@
         }
 
         function item() {
+            $user = $this->verify_authentication();
             switch ($this->request->verb) {
                 case "GET": 
-                    $user = $this->verify_authentication();
                     if ($this->request->auth && $user) { 
                         if (($this->method != '' || $this->method != null)) {
                             if (is_numeric($this->method)) {
@@ -133,7 +134,6 @@
                     break;
                 case "POST": // Create an item
                     if ($this->request->auth) {
-                        $user = $this->verify_authentication();
                         // Do I really need to check if all the fields are set? Yes but in the method call itself
                         if (isset($this->request->payload['item_name']) && $user) {
                             $this->controller->insert(
@@ -158,7 +158,6 @@
                     // Overlapp the new version over the old one, any items that are blank or empty
                     //  just stay as they were.     
                     if ($this->request->auth) {
-                        $user = $this->verify_authentication();
                         if (($this->method != '' || $this->method != null) && $user) {
                             if (is_numeric($this->method)) {
                                 $this->controller->update(
@@ -185,7 +184,6 @@
                     // TODO: Delete item completely
                     // Should the item id be replaces (i.e., if item #3 is deleted #4 will take it's place)? Yes
                     if ($this->request->auth) { 
-                        $user = $this->verify_authentication();
                         if ($user && ($this->method != '' && $this->method != null)) {
                             $this->controller->delete($user['user_id'], intval($this->method));                                    
                         } else {
@@ -198,9 +196,9 @@
         }
 
         function cart() {
+            $user = $this->verify_authentication();
             switch ($this->request->verb){
                 case "GET": // Get the items in the user cart
-                    $user = $this->verify_authentication();
                     if($this->request->auth && $user){
                         if (($this->method != '' || $this->method != null)) {
                             if (is_numeric($this->method)) {
@@ -216,8 +214,7 @@
                     }
                     break;
                 case "POST":// Add an item to the user cart
-                    $user = $this->verify_authentication();
-                    if($this->request->auth){
+                    if($this->request->auth && $user){
                         if (isset($this->request->payload['item_id']) &&
                             isset($this->request->payload['amount']) &&
                             isset($this->request->payload['status']) &&
@@ -237,7 +234,6 @@
                     }
                     break;
                 case "PATCH":// update the item info in the cart
-                    $user = $this->verify_authentication();
                     if($this->request->auth && $user){
                         if((!is_null($this->method) || $this->method != '') && is_numeric($this->method)) {
                             if (isset($this->request->payload['item_id']) && 
@@ -263,7 +259,6 @@
                     }
                     break;
                 case "DELETE": // delete a cart 
-                    $user = $this->verify_authentication();
                     if($this->request->auth && $user) {
                         if((!is_null($this->method) || $this->method != '') && is_numeric($this->method)) {
                             $this->controller->delete($user['user_id'], intval($this->method));

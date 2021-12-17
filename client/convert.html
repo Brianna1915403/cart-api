@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel='stylesheet' href='css/style.css' type='text/css'>
+    <link rel='stylesheet' href='css/utilities.css' type='text/css'>  
+    <title>Converter | Conversion</title>
+</head>
+<body class="light-theme-bg-accent">
+    <!-- Forms -->
+    <div class="container">
+        <div class="hForm card light-theme-bg-main">
+            <section class="file-form">
+                <header>
+                    <h2>Convert a file</h2>
+                    <p>Want to convert a file? Here you go!</p>
+                </header>                
+                <form action="" method="post">
+                    <label>File <input type="file" name="file" required></label><br /><br />
+                    
+                    <label>From</label>
+                    <select name="originalFormat">
+                        <option value="docx">docx</option>
+                        <option value="pdf" selected>pdf</option>
+                        <option value="pptx">pptx</option>
+                    </select>
+
+                    <label>To</label>
+                    <select name="targetFormat">
+                        <option value="docx">docx</option>
+                        <option value="pdf" selected>pdf</option>
+                        <option value="pptx">pptx</option>
+                    </select>
+
+                    <input class="btn light-theme-bg-accent light-theme-text" type="submit" name="convertFile" value="Convert File">
+                </form>
+            </section>
+            <section class="video-form">
+                <header>                    
+                    <h2>Convert a video</h2>
+                    <p>More of a video type? No problem!</p>
+                </header> 
+                <form action="" method="post">
+                    <label>Video <input type="file" name="video" required></label><br /><br />
+
+                    <label>From</label>
+                    <select name="originalFormat">
+                        <option value="mp4">mp4</option>
+                        <option value="avi" selected>avi</option>
+                        <option value="wmv">wmv</option>
+                    </select>
+
+                    <label>To</label>
+                    <select name="targetFormat">
+                        <option value="mp4">mp4</option>
+                        <option value="avi" selected>avi</option>
+                        <option value="wmv">wmv</option>
+                    </select>
+                    
+                    <input class="btn light-theme-bg-accent light-theme-text" type="submit" name="convertVideo" value="Convert Video">
+                </form>
+            </section>
+        </div>
+    </div>
+</body>
+</html>
