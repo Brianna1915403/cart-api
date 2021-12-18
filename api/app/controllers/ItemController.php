@@ -60,7 +60,7 @@
             } catch (Exception $e) {
                 http_response_code(500);
                 $this->view('index', ['status'=>http_response_code(), 'message'=>'Internal Server Error: Could Not Retrieve Item']);
-                return;
+                return false;
             }
         }
 
@@ -75,7 +75,7 @@
             } catch (Exception $e) {
                 http_response_code(500);
                 $this->view('index', ['status'=>http_response_code(), 'message'=>'Internal Server Error: Operation Not Completed']);
-                return;
+                return false;
             }
         }
         
@@ -153,7 +153,11 @@
             }
 
             if (!is_null($picture)) {
-                $this->delete_from_cdn($items[$item_index]);
+                if (!is_null($item['picture'])) {
+                    if (!$this->delete_from_cdn($items[$item_index])) {
+                        return;
+                    }
+                }
                 $pic = null;
                 if (!empty($picture)) {
                     $pic = $this->put_in_cdn($picture);
@@ -180,10 +184,13 @@
             } else {
                 $item = $items[$item_index];
                 
-                $this->delete_from_cdn($item);
+                if (!is_null($item['picture'])) {
+                    if (!$this->delete_from_cdn($item)) {
+                        return;
+                    }
+                }
 
                 $this->item->delete($item['item_id']);
-
                 $this->view('index', ['status'=>http_response_code(), 'message'=>'Item Deleted']);
             }
         }

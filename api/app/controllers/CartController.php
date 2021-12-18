@@ -49,6 +49,7 @@
             $carts = $this->cart->getByUserID($user_id);
             if (is_null($carts) || (count($carts) - 1) < $cart_index || $cart_index < 0) {
                 $this->view('index', ['status' => http_response_code(), 'cart' => null]);
+                return;
             } else {
                 $cart = $carts[$cart_index];
                 $cart['cart_id'] = $cart_index;

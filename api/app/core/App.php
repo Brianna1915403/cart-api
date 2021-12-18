@@ -72,7 +72,7 @@
                         }
                         break;
                     case "POST": // Create a user
-                        if (!$this->request->auth && $user) {
+                        if (!$this->request->auth) {
                             if (isset($this->request->payload['email']) && isset($this->request->payload['password'])) {
                                 $this->controller->insert(
                                     $this->request->payload['email'], 
@@ -165,10 +165,10 @@
                                     intval($this->method),
                                     isset($this->request->payload['item_name']) ? $this->request->payload['item_name'] : null, 
                                     isset($this->request->payload['description']) ? $this->request->payload['description'] : null,
-                                    isset($this->request->payload['price']) ? $this->request->payload['price'] : 0.00,
+                                    isset($this->request->payload['price']) ? $this->request->payload['price'] : null,
                                     isset($this->request->payload['picture']) ? $this->request->payload['picture'] : null,
                                     isset($this->request->payload['tag']) ? $this->request->payload['tag'] : null,
-                                    isset($this->request->payload['stock']) ? $this->request->payload['stock'] : 0,
+                                    isset($this->request->payload['stock']) ? $this->request->payload['stock'] : null,
                                 );
                             } else {
                                 include("app/views/errors/404.php");
