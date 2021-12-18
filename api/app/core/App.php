@@ -119,7 +119,7 @@
             switch ($this->request->verb) {
                 case "GET": 
                     if ($this->request->auth && $user) { 
-                        if (($this->method != '' || !is_null($this->method))) {
+                        if (($this->method != '' && !is_null($this->method))) {
                             if (is_numeric($this->method)) {
                                 $this->controller->get_one($user['user_id'], intval($this->method));
                             } else {
@@ -157,7 +157,7 @@
                     // Overlapp the new version over the old one, any items that are blank or empty
                     //  just stay as they were.     
                     if ($this->request->auth && $user) {
-                        if (($this->method != '' || !is_null($this->method))) {
+                        if (($this->method != '' && !is_null($this->method))) {
                             if (is_numeric($this->method)) {
                                 $this->controller->update(
                                     $user['user_id'],
@@ -200,7 +200,7 @@
             switch ($this->request->verb){
                 case "GET": // Get the items in the user cart
                     if($this->request->auth && $user){
-                        if (($this->method != '' || !is_null($this->method))) {
+                        if (($this->method != '' && !is_null($this->method))) {
                             if (is_numeric($this->method)) {
                                 $this->controller->get_one($user['user_id'], intval($this->method));
                             } else {
@@ -235,7 +235,7 @@
                     break;
                 case "PATCH":// update the item info in the cart
                     if($this->request->auth && $user){
-                        if((!is_null($this->method) || $this->method != '') && is_numeric($this->method)) {
+                        if((!is_null($this->method) && $this->method != '') && is_numeric($this->method)) {
                             if (isset($this->request->payload['item_id']) && 
                                 isset($this->request->payload['amount'])) {
                                 $this->controller->update_contents(
@@ -260,7 +260,7 @@
                     break;
                 case "DELETE": // delete a cart 
                     if($this->request->auth && $user) {
-                        if((!is_null($this->method) || $this->method != '') && is_numeric($this->method)) {
+                        if((!is_null($this->method) && $this->method != '') && is_numeric($this->method)) {
                             $this->controller->delete($user['user_id'], intval($this->method));
                         }
                     }else{
