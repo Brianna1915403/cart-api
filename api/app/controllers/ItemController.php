@@ -78,19 +78,25 @@
                 return false;
             }
         }
-        
-        function get_all($user_id) {
-            $items = $this->item->getByUserID($user_id);
-            
+
+        function format_items(&$items) {
             // Reassiging the item_id to match what the user enters in the url so it makes more sense contextually. 
             // Unseting the user_id so the user does not have access to critical database information.
             for ($i = 0; $i < count($items); ++$i) {
                 $items[$i]['item_id'] = $i;
+                $items[$i]['price'] = floatval($items[$i]['price']);
+                $items[$i]['stock'] = intval($items[$i]['stock']);
                 unset($items[$i]['user_id']); // This is dumb... I could have just changed the query...
                 if (!is_null($items[$i]['picture'])) {
                     $this->get_from_cdn($items[$i]);   
                 }
             }
+        }
+        
+        function get_all($user_id) {
+            $items = $this->item->getByUserID($user_id);
+            
+            format_items($items);            
 
             $this->view('index', [
                 'status' => http_response_code(),
@@ -101,17 +107,7 @@
         function get_one($user_id, $item_index) {
             $items = $this->item->getByUserID($user_id);
             
-            // Reassiging the item_id to match what the user enters in the url so it makes more sense contextually. 
-            // Unsetting the user_id so the user does not have access to critical database information.
-            for ($i = 0; $i < count($items); ++$i) {
-                $items[$i]['item_id'] = $i;
-                $items[$i]['price'] = floatval($items[$i]['price']);
-                $items[$i]['stock'] = intval($items[$i]['stock']);
-                unset($items[$i]['user_id']);
-                if (!is_null($items[$i]['picture'])) {
-                    $this->get_from_cdn($items[$i]);   
-                }             
-            }
+            format_items($items);
 
             $this->view('index', [
                 'status' => http_response_code(),
