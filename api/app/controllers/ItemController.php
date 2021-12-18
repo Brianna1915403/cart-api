@@ -105,6 +105,8 @@
             // Unsetting the user_id so the user does not have access to critical database information.
             for ($i = 0; $i < count($items); ++$i) {
                 $items[$i]['item_id'] = $i;
+                $items[$i]['price'] = floatval($items[$i]['price']);
+                $items[$i]['stock'] = intval($items[$i]['stock']);
                 unset($items[$i]['user_id']);
                 if (!is_null($items[$i]['picture'])) {
                     $this->get_from_cdn($items[$i]);   
@@ -124,7 +126,15 @@
                 $S3_pic_name = $this->put_in_cdn($picture);
             }
 
-            $this->item->insert($user_id, $name, $desc, $price, $S3_pic_name, $tag, $stock);
+            $this->item->insert(
+                $user_id, 
+                $name, 
+                $desc, 
+                is_numeric($price)? floatval($price) : 0.00, 
+                $S3_pic_name, 
+                $tag, 
+                is_numeric($stock)? intval($stock) : 0
+            );
             
             http_response_code(201);
             $this->view('index', ['status'=>http_response_code()]);
@@ -153,7 +163,7 @@
             }
 
             if (!is_null($picture)) {
-                if (!is_null($item['picture'])) {
+                if (!is_null($items[$item_index]['picture'])) {
                     if (!$this->delete_from_cdn($items[$item_index])) {
                         return;
                     }

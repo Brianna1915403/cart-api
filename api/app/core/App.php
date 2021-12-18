@@ -119,7 +119,7 @@
             switch ($this->request->verb) {
                 case "GET": 
                     if ($this->request->auth && $user) { 
-                        if (($this->method != '' || $this->method != null)) {
+                        if (($this->method != '' || !is_null($this->method))) {
                             if (is_numeric($this->method)) {
                                 $this->controller->get_one($user['user_id'], intval($this->method));
                             } else {
@@ -153,12 +153,11 @@
                     }
                     break;
                 case "PATCH": 
-                    // TODO: Update item fields
                     // Not all fields are required nor do new/old_field exist
                     // Overlapp the new version over the old one, any items that are blank or empty
                     //  just stay as they were.     
-                    if ($this->request->auth) {
-                        if (($this->method != '' || $this->method != null) && $user) {
+                    if ($this->request->auth && $user) {
+                        if (($this->method != '' || !is_null($this->method))) {
                             if (is_numeric($this->method)) {
                                 $this->controller->update(
                                     $user['user_id'],
@@ -171,24 +170,25 @@
                                     isset($this->request->payload['stock']) ? $this->request->payload['stock'] : null,
                                 );
                             } else {
-                                include("app/views/errors/404.php");
+                                include("app/views/errors/400.php");
                             }
                         } else {
                             include("app/views/errors/400.php");
                         }
                     } else {
-                        include("app/views/errors/400.php");
+                        include("app/views/errors/401.php");
                     }            
                     break;
                 case "DELETE": 
-                    // TODO: Delete item completely
-                    // Should the item id be replaces (i.e., if item #3 is deleted #4 will take it's place)? Yes
-                    if ($this->request->auth) { 
-                        if ($user && ($this->method != '' && $this->method != null)) {
+                    // Should the item id be replaces (i.e., if item #3 is deleted #4 will take it's place)? Yes?
+                    if ($this->request->auth && $user) { 
+                        if (($this->method != '' && !is_null($this->method))) {
                             $this->controller->delete($user['user_id'], intval($this->method));                                    
                         } else {
                             include("app/views/errors/400.php");                                    
                         }
+                    } else {
+                        include("app/views/errors/401.php"); 
                     }
                     break;
                 default: include("app/views/errors/400.php"); break;
@@ -200,7 +200,7 @@
             switch ($this->request->verb){
                 case "GET": // Get the items in the user cart
                     if($this->request->auth && $user){
-                        if (($this->method != '' || $this->method != null)) {
+                        if (($this->method != '' || !is_null($this->method))) {
                             if (is_numeric($this->method)) {
                                 $this->controller->get_one($user['user_id'], intval($this->method));
                             } else {
