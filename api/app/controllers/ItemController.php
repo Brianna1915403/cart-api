@@ -96,7 +96,7 @@
         function get_all($user_id) {
             $items = $this->item->getByUserID($user_id);
             
-            format_items($items);            
+            $this->format_items($items);            
 
             $this->view('index', [
                 'status' => http_response_code(),
@@ -107,7 +107,7 @@
         function get_one($user_id, $item_index) {
             $items = $this->item->getByUserID($user_id);
             
-            format_items($items);
+            $this->format_items($items);
 
             $this->view('index', [
                 'status' => http_response_code(),
