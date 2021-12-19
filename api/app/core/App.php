@@ -12,7 +12,12 @@
 
         public function __construct() {
             
-            $this->request = new Request();            
+            $this->request = new Request();  
+            
+            if ($this->request->content_type != "application/json") {
+                include("app/views/errors/400.php");
+                return;
+            }
 
             $this->set_controller();
             $this->set_method();

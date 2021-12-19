@@ -24,7 +24,7 @@
                 $it = [];
                 $user_item = $user_items[$items[$i]];
                 $it['item_name'] = $user_item['item_name'];
-                $it['amount'] = $item_amounts[$i];
+                $it['amount'] = intval($item_amounts[$i]);
                 $it['link'] = '/cart-shop/api/item/'.$items[$i];
                 $item_list[] = $it;
             }

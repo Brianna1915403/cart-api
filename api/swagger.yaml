@@ -1,0 +1,513 @@
+swagger: "2.0"
+info:
+  description: ""
+  version: "1.0.0"
+  title: "Cart Shop API"
+host: "localhost"
+basePath: "/cart-shop/api"
+tags:
+- name: "Item"
+  description: ""
+- name: "Cart"
+  description: ""
+- name: "User"
+  description: ""
+schemes:
+- "https"
+- "http"
+paths:
+  /item:
+    get:
+      tags:
+      - "Item"
+      summary: "Retrives all items in your shop"
+      description: "Returns an array of item objects."
+      operationId: "get_all_items"
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: "Successful Operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Item"
+        "401":
+          description: "Invalid Credentials | Probable Cause: Missing/Invalid API key"
+      security:
+      - api_key: []
+    post:
+      tags:
+      - "Item"
+      summary: "Add a new item to your shop"
+      description: ""
+      operationId: "add_item"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Item object to be added to the shop"
+        required: true
+        schema:
+          type: "object"
+          required:
+          - "item_name"
+          properties:
+            item_name:
+              type: "string"
+              description: "The name of the item"
+              example: "Item"
+            description:
+              type: "string"
+              description: "The description of the item"
+              example: "This is an item sold in my shop."
+            price:
+              type: "number"
+              description: "The price of the item"
+              example: 9.99
+            picture:
+              type: "string"
+              description: "The path to the image representing the item"
+              example: "C:/path/to/the/image.png"
+            tag:
+              type: "string"
+              description: "A pseudo list of tags categorizing the item"
+              example: "item,new"
+            stock:
+              type: "integer"
+              description: "The amount of this item, one has in store"
+              example: 69
+      responses:
+        "201":
+          description: "Item Created | The item was created successfully"
+        "400":
+          description: "Bad Request | Probable Cause: Required parameters may be missing"
+        "401":
+          description: "Invalid Credentials | Probable Cause: Missing/Invalid API key"
+        "500":
+          description: "Internal Server Error | Probable Cause: Could not find or store the item picture"
+      security:
+      - api_key: []
+  /item/{item_id}:
+    get:
+      tags:
+      - "Item"
+      summary: "Retrives a specified item in your shop"
+      description: "Returns an array of item objects."
+      operationId: "get_item"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "item_id"
+        in: "path"
+        description: "ID for the item to return"
+        required: true
+        type: "integer"
+      responses:
+        "200":
+          description: "Successful Operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Item"
+        "401":
+          description: "Invalid Credentials | Probable Cause: Missing/Invalid API key"
+      security:
+      - api_key: []
+    patch:
+      tags:
+      - "Item"
+      summary: "Updates a specified item in your shop"
+      description: ""
+      operationId: "update_item"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "item_id"
+        in: "path"
+        description: "ID for the item to update"
+        required: true
+        type: "integer"
+      - in: "body"
+        name: "body"
+        description: "Item object to be added to the shop"
+        required: true
+        schema:
+          type: "object"
+          properties:
+            item_name:
+              type: "string"
+              description: "The name of the item"
+              example: "Item"
+            description:
+              type: "string"
+              description: "The description of the item"
+              example: "This is an item sold in my shop."
+            price:
+              type: "number"
+              description: "The price of the item"
+              example: 9.99
+            picture:
+              type: "string"
+              description: "The path to the image representing the item"
+              example: "C:/path/to/the/image.png"
+            tag:
+              type: "string"
+              description: "A pseudo list of tags categorizing the item"
+              example: "item,new"
+            stock:
+              type: "integer"
+              description: "The amount of this item, one has in store"
+              example: 69
+      responses:
+        "200":
+          description: "Successful Operation"
+        "400":
+          description: "Bad Request | Probable Cause: Item not or incorrectly specified"
+        "401":
+          description: "Invalid Credentials | Probable Cause: Missing/Invalid API key"
+      security:
+      - api_key: []
+    delete:
+      tags:
+      - "Item"
+      summary: "Deletes a specified item in your shop"
+      description: ""
+      operationId: "delete_item"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "item_id"
+        in: "path"
+        description: "ID for the item to delete"
+        required: true
+        type: "integer"
+      responses:
+        "200":
+          description: "Successful Operation"
+        "400":
+          description: "Bad Request | Probable Cause: Item not or incorrectly specified"
+        "401":
+          description: "Invalid Credentials | Probable Cause: Missing/Invalid API key"
+      security:
+      - api_key: []
+  /cart:
+    get:
+      tags:
+      - "Cart"
+      summary: "Retrives all carts from your shop"
+      description: "Returns an array of cart objects."
+      operationId: "get_all_carts"
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: "Successful Operation"
+          schema:
+            type: "object"
+            properties:
+              items:
+                type: "array"
+                items:
+                  $ref: "#/definitions/Cart"
+        "401":
+          description: "Invalid Credentials | Probable Cause: Missing/Invalid API key"
+      security:
+      - api_key: []
+    post:
+      tags:
+      - "Cart"
+      summary: "Create a new carts for your shop"
+      description: ""
+      operationId: "add_cart"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Item object to be added to the shop"
+        required: true
+        schema:
+          type: "object"
+          required:
+          - "item_id"
+          - "amount"
+          - "status"
+          properties:
+            item_id:
+              type: "integer"
+              description: "The id of the item"
+              example: 13
+            amount:
+              type: "integer"
+              description: "The amount of the item"
+              example: 1
+            status:
+              type: "string"
+              description: "The cart status"
+              example: "Complete"
+            client_id:
+              type: "string"
+              description: "An identifier for the shop's user system"
+              example: "jane001"
+      responses:
+        "200":
+          description: "Cart Created | The cart was created successfully"
+        "401":
+          description: "Invalid Credentials | Probable Cause: Missing/Invalid API key"
+      security:
+      - api_key: []
+  /cart/{cart_id}:
+    get:
+      tags:
+      - "Cart"
+      summary: "Retrives a specified cart from your shop"
+      description: "Returns an array of cart objects."
+      operationId: "get_cart"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "cart_id"
+        in: "path"
+        description: "ID for the cart to return"
+        required: true
+        type: "integer"
+      responses:
+        "200":
+          description: "Successful Operation"
+          schema:
+            type: "object"
+            properties:
+              items:
+                type: "array"
+                items:
+                  $ref: "#/definitions/Cart"
+        "401":
+          description: "Invalid Credentials | Probable Cause: Missing/Invalid API key"
+        "404":
+          description: "Not Found | Probable Cause: Specified cart could not be located"
+      security:
+      - api_key: []
+    patch:
+      tags:
+      - "Cart"
+      summary: "Updates a specified cart for your shop"
+      description: ""
+      operationId: "update_cart"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "cart_id"
+        in: "path"
+        description: "ID for the item to update"
+        required: true
+        type: "integer"
+      - in: "body"
+        name: "body"
+        description: "Item information to be changed in the cart"
+        required: true
+        schema:
+          type: "object"
+          properties:
+            item_id:
+              type: "integer"
+              description: "The id of the item one wishes to update"
+              example: 0
+            stock:
+              type: "integer"
+              description: "The amount of this item, one has in store"
+              example: 70
+            status:
+              type: "string"
+              description: "The status of the cart, based on your shop preference"
+              example: "Complete"
+      responses:
+        "200":
+          description: "Cart Updated | Successful Operation"
+        "400":
+          description: "Bad Request | Probable Cause: Cart not or incorrectly specified"
+        "401":
+          description: "Invalid Credentials | Probable Cause: Missing/Invalid API key"
+      security:
+      - api_key: []
+    delete:
+      tags:
+      - "Cart"
+      summary: "Deletes a specified cart from your shop"
+      description: ""
+      operationId: "delete_cart"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "cart_id"
+        in: "path"
+        description: "ID for the cart to delete"
+        required: true
+        type: "integer"
+      responses:
+        "200":
+          description: "Cart Deleted | Successful Operation"
+        "400":
+          description: "Bad Request | Probable Cause: Cart not or incorrectly specified"
+        "401":
+          description: "Invalid Credentials | Probable Cause: Missing/Invalid API key"
+      security:
+      - api_key: []
+  /user:
+    get:
+      tags:
+      - "User"
+      summary: "Retrives links to accessible features"
+      description: ""
+      operationId: "get_user"
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: "Successful Operation"
+          schema:
+            type: "object"
+            properties:
+              status:
+                type: "integer"
+                description: "Request status code"
+                example: 200
+              features:
+                type: "object"
+                properties:
+                  items:
+                    type: "string"
+                    description: "Link to the items"
+                    example: "/cart-shop/item"
+                  carts:
+                    type: "string"
+                    description: "Link to the carts"
+                    example: "/cart-shop/cart"
+        "401":
+          description: "Invalid Credentials | Probable Cause: Missing/Invalid API key"
+      security:
+      - api_key: []
+    post:
+      tags:
+      - "User"
+      summary: "Create a new account"
+      description: ""
+      operationId: "add_user"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Item object to be added to the shop"
+        required: true
+        schema:
+          type: "object"
+          required:
+          - "email"
+          - "password"
+          properties:
+            email:
+              type: "string"
+              description: "Your/shop owner's email"
+              example: "email@domain.ext"
+            password:
+              type: "string"
+              description: "The password to use on the account"
+              example: "secure_password"
+      responses:
+        "200":
+          description: "User Created | The user was created successfully"
+          schema:
+            type: "object"
+            properties:
+              status:
+                type: "integer"
+                description: "Request status code"
+                example: 200
+              token:
+                type: "string"
+                description: "Your api key"
+                example: "8e7C1.cEw78R27Sx8cXNa8swVqv8mOmv"
+        "400":
+          description: "Invalid Request | Probable Cause: Use of the key query component in the address bar"
+securityDefinitions:
+  api_key:
+    type: "apiKey"
+    name: "api_key"
+    in: "query"
+definitions:
+  Item:
+    type: "object"
+    properties:
+      item_id:
+        type: "integer"
+        description: "The position of your items."
+        example: 0
+      item_name:
+        type: "string"
+        description: "The name of the item"
+        example: "Item"
+      description:
+        type: "string"
+        description: "The description of the item"
+        example: "This is an item sold in my shop."
+      price:
+        type: "number"
+        description: "The price of the item"
+        example: 9.99
+      picture:
+        type: "string"
+        description: "The path to the image representing the item"
+        example: "C:/path/to/the/image.png"
+      tag:
+        type: "string"
+        description: "A pseudo list of tags categorizing the item"
+        example: "item,new"
+      stock:
+        type: "integer"
+        description: "The amount of this item, one has in store"
+        example: 69
+  Cart:
+    type: "object"
+    properties:
+      cart_id:
+        type: "integer"
+        description: "The position of your cart."
+        example: 0
+      client_id:
+        type: "string"
+        description: "An identifier representing one of your client"
+        example: "0"
+      items:
+        type: "array"
+        description: "The price of the item"
+        items:
+          type: "object"
+          properties:
+            item_name:
+              type: "string"
+              description: "Item name"
+              example: "Item - 1"
+            amount:
+              type: "integer"
+              description: "Item amount"
+              example: 2
+            link:
+              type: "string"
+              description: "The api link to the item"
+              example: "/cart-shop/api/item/1"
+      cart_status:
+        type: "string"
+        description: "The status of the cart, based on your shop preference"
+        example: "In Transit"
