@@ -14,8 +14,8 @@
                     <h2>Convert a file</h2>
                     <p>Want to convert a file? Here you go!</p>
                 </header>                
-                <form action="" method="post">
-                    <label>File <input type="file" name="file" required></label><br /><br />
+                <form action="" method="post" enctype="multipart/form-data">
+                    <label>File <input id="upload" type="file" name="upload" required></label><br /><br />
                     
                     <label>From</label>
                     <select name="originalFormat">
@@ -39,8 +39,8 @@
                     <h2>Convert a video</h2>
                     <p>More of a video type? No problem!</p>
                 </header> 
-                <form action="" method="post">
-                    <label>Video <input type="file" name="video" required></label><br /><br />
+                <form action="" method="post" enctype="multipart/form-data">
+                    <label>Video <input id='video' type="file" name="video" required></label><br /><br />
 
                     <label>From</label>
                     <select name="originalFormat">

@@ -44,7 +44,7 @@
             }
 
             if (isset($param['client_id'])) {
-                var_dump($param['client_id']);
+                
             }
 
             $this->view('index', ['status' => http_response_code(), 'carts' => $carts]);

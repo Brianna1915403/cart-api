@@ -17,13 +17,16 @@
         $urlFile = "http://localhost/WebServicesProject/Converter/api/file/convert/"; // convert a file.
 
         echo $_SESSION['PASSWORD']."<br/>";
+        // echo $_POST["file"]."<br/>";
+        var_dump($_FILES['upload']['tmp_name']);
 
         $post = array(
             "licenseNumber" => $_SESSION['LICENSE_NUMBER'],
             "password_hash" => $_SESSION['PASSWORD'],
             "originalFormat" => $_POST['originalFormat'],
             "targetFormat"=> $_POST['targetFormat'],
-            "file" => $_POST["file"]
+            "file" => $_FILES['upload']['tmp_name'],
+            "saveAs" => "C:\\xampp\htdocs\cart-shop\client\\files"
         );
 
         $data = json_encode($post);
