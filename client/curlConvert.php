@@ -9,17 +9,20 @@
         HTTPPostFile();
         echo "File Clicked";
     } else if (isset($_POST['convertVideo'])) {
+        HTTPPostVideo();
         echo "Video Cliked";
     }
 
     function HTTPPostFile(){
-        $urlFile = "http://localhost/WebServicesProject/Converter/api/file/convert"; // convert a file.
+        $urlFile = "http://localhost/WebServicesProject/Converter/api/file/convert/"; // convert a file.
+
+        echo $_SESSION['PASSWORD']."<br/>";
 
         $post = array(
             "licenseNumber" => $_SESSION['LICENSE_NUMBER'],
             "password_hash" => $_SESSION['PASSWORD'],
-            "originalFormat" => "docx",
-            "targetFormat"=> "pdf",
+            "originalFormat" => $_POST['originalFormat'],
+            "targetFormat"=> $_POST['targetFormat'],
             "file" => $_POST["file"]
         );
 
@@ -29,6 +32,7 @@
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST"); // Set the verb of the request
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data); // Add the data to the request
 
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         // Set the content and accept type
         curl_setopt($ch, CURLOPT_HTTPHEADER,
             array(
@@ -43,13 +47,13 @@
     }
 
     function HTTPPostVideo(){
-        $urlVideo  = "http://localhost/WebServicesProject/Converter/api/video/convert"; // convert a video.
+        $urlVideo  = "http://localhost/WebServicesProject/Converter/api/video/convert/"; // convert a video.
 
         $post = array(
             "licenseNumber" => $_SESSION['LICENSE_NUMBER'],
             "password_hash" => $_SESSION['PASSWORD'],
-            "originalFormat" => "mp4",
-            "targetFormat"=> "avi",
+            "originalFormat" => $_POST['originalFormat'],
+            "targetFormat"=> $_POST['targetFormat'],
             "file" => $_POST["video"]
         );
 
@@ -59,6 +63,7 @@
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST"); // Set the verb of the request
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data); // Add the data to the request
 
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         // Set the content and accept type
         curl_setopt($ch, CURLOPT_HTTPHEADER,
             array(

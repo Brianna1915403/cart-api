@@ -212,7 +212,7 @@
                                 include("app/views/errors/404.php");
                             }
                         } else {
-                            $this->controller->get_all($user['user_id']);
+                            $this->controller->get_all($user['user_id'], $this->params);
                         }
                     } else {
                         include("app/views/errors/401.php");

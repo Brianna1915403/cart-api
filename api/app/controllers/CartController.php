@@ -24,6 +24,7 @@
                 $it = [];
                 $user_item = $user_items[$items[$i]];
                 $it['item_name'] = $user_item['item_name'];
+                $it['price'] = floatval($user_item['price']);
                 $it['amount'] = intval($item_amounts[$i]);
                 $it['link'] = '/cart-shop/api/item/'.$items[$i];
                 $item_list[] = $it;
@@ -34,12 +35,16 @@
             unset($cart['item_ids'], $cart['item_amounts'], $cart['status'], $cart['user_id']);
         }
         
-        function get_all($user_id) {
+        function get_all($user_id, $param = null) {
             $carts = $this->cart->getByUserID($user_id);
 
             for ($i = 0; $i < count($carts); ++$i ) {
                 $carts[$i]['cart_id'] = $i;
                 $this->format_cart_items($carts[$i]);
+            }
+
+            if (isset($param['client_id'])) {
+                var_dump($param['client_id']);
             }
 
             $this->view('index', ['status' => http_response_code(), 'carts' => $carts]);

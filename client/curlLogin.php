@@ -18,12 +18,15 @@
 
     function HTTPPostClient(){
         $url = "http://localhost/WebServicesProject/Converter/api/client/create"; // url to create a user.
+        
+        $hash_password = password_hash($_POST['password_hash'], PASSWORD_DEFAULT);
+        
         $post = array(
             "clientName" => $_POST['username'],
-            "password_hash" => $_POST['password']
+            "password_hash" => $hash_password
         );
 
-        $_SESSION['PASSWORD'] = $post['password_hash'];
+        $_SESSION['PASSWORD'] = $_POST['password_hash'];
 
         $data = json_encode($post);
 
