@@ -14,7 +14,7 @@
             
             $this->request = new Request();  
             
-            if ($this->request->content_type != "application/json") {
+            if (!is_null($this->request->content_type) && $this->request->content_type != "application/json") {
                 include("app/views/errors/400.php");
                 return;
             }
