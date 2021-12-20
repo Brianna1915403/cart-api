@@ -1,6 +1,7 @@
 <?php
     session_start();
-    require "init.php";    
+    require "init.php";
+    echo "<h2>Hope you are doing great ".$_SESSION['NAME']."!</h2><br/><br/>";    
     include("modify.html");
 
     if(isset($_POST['updateUsername'])) {
@@ -54,7 +55,7 @@
 
         $put = array(
             "licenseNumber" => $_SESSION['LICENSE_NUMBER'],
-            "password_hash" => $_POST['new_password']
+            "password_hash" => password_hash($_POST['new_password'], PASSWORD_DEFAULT)
         );
 
         $data = json_encode($put);

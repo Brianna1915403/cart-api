@@ -1,7 +1,8 @@
 <?php
     session_start();
     require "init.php";
-    echo "<div style=text-align:center;> Keep this very preciously, you will need it to login in the future: <br/> License Number = ".$_SESSION['LICENSE_NUMBER']."</ div><br /><bt />";
+    echo "<h2 class='center'>Hope you are doing great ".$_SESSION['NAME']."!</h2><br/><br/>"; 
+    echo "<div class='center'> Keep this very preciously, you will need it to login in the future: <br/> License Number = ".$_SESSION['LICENSE_NUMBER']."</ div><br /><bt />";
     include("convert.html");
 
     
@@ -9,19 +10,50 @@
         header("location: ".BASE."/curlModify.php");
     }
     else if(isset($_POST['convertFile'])) {
-        echo "<div class='download-link'><a href='".HTTPPostFile()."' target='_blank' rel='noopener noreferrer'>Download</a></ div>";
-        echo "<br / >";
-        var_dump(HTTPGetClientHistory('file'));
+        echo "<div class='download-link'><a href='".HTTPPostFile()."' target='_blank' rel='noopener noreferrer'>Download</a></div>";
+        echo "<br /><br /><br />";
+        echo "<div class='history'>";
+        get_table(HTTPGetClientHistory('file'));
+        echo "</div>";
     } else if (isset($_POST['convertVideo'])) {
-        echo "<div class='download-link'><a href='".HTTPPostVideo()."' target='_blank' rel='noopener noreferrer'>Download</a></ div>";
-        echo "<br />";
-        var_dump(HTTPGetClientHistory('video'));
+        echo "<div class='download-link'><a href='".HTTPPostVideo()."' target='_blank' rel='noopener noreferrer'>Download</a></div>";
+        echo "<br /><br /><br />";
+        echo "<div class='history'>";
+        get_table(HTTPGetClientHistory('video'));   
+        echo "</div>";
+    }
+
+    function get_uniqid($lenght = 13) {
+        $bytes = random_bytes(ceil($lenght / 2));
+
+        return substr(bin2hex($bytes), 0, $lenght);
+    }
+
+    function get_table($rows) {
+        echo "<table class='history-table'>";
+        echo "  <tr>";
+        echo "      <th>Request Date</th>";
+        echo "      <th>Original Format</th>";
+        echo "      <th>Target Format</th>";
+        echo "      <th>File</th>";
+        echo "  </tr>";
+
+        foreach($rows as $row) {
+            echo "  <tr>";
+            echo "      <th>".$row['requestDate']."</th>";
+            echo "      <th>".$row['originalFormat']."</th>";
+            echo "      <th>".$row['targetFormat']."</th>";
+            echo "      <th>".$row['file']."</th>";
+            echo "  </tr>";
+        }
+
+        echo "</table>";
     }
 
     function HTTPPostFile(){
         $urlFile = "http://localhost/WebServicesProject/Converter/api/file/convert/"; // convert a file.
 
-        $target = getcwd().'\\files\\'.$_FILES['upload']['name'];
+        $target = getcwd().'\\files\\'.get_uniqid(5).'_'.$_FILES['upload']['name'];
         if (move_uploaded_file($_FILES['upload']['tmp_name'], $target)) {
             $post = array(
                 "licenseNumber" => $_SESSION['LICENSE_NUMBER'],
@@ -57,7 +89,7 @@
     function HTTPPostVideo(){
         $urlVideo  = "http://localhost/WebServicesProject/Converter/api/video/convert/"; // convert a video.
 
-        $target = getcwd().'\\files\\'.$_FILES['video']['name'];
+        $target = getcwd().'\\files\\'.get_uniqid(5).'_'.$_FILES['video']['name'];
         if (move_uploaded_file($_FILES['video']['tmp_name'], $target)) { 
             $post = array(
                 "licenseNumber" => $_SESSION['LICENSE_NUMBER'],

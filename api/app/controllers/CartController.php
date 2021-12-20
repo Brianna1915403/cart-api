@@ -95,10 +95,11 @@
             if ($status == "Cancelled") {
                 $cart = $carts[$cart_index];
                 $cart_items = explode(',', $cart['item_ids']);
-                // $items = $this->item->getByUserID($user_id);
-                // for ($i = 0; $i < count($cart_items); ++$i) {
-                //     $this->update_contents($user_id, $cart_index, $cart_items[$i], );
-                // }                
+                $cart_amounts = explode(',', $cart['item_amounts']);
+                for ($i = 0; $i < count($cart_items); ++$i) {
+                    $item = $this->item->getByIndex($user_id, $cart_items[$i]);
+                    $this->item->update_stock($item['item_id'], $item['stock'] + $cart_amounts[$i]);
+                }                
             }
             
             $this->view('index', ['status'=>http_response_code(), 'message'=>'Cart Updated']);

@@ -10,7 +10,9 @@
 
     <!-- Forms -->
     <div class="container">
-        <input class="btn light-theme-bg-accent light-theme-text" type="submit" name="modifyAccount" value="Modify Account">
+        <form action="" method="post" enctype="multipart/form-data">
+            <input class="btn light-theme-bg-accent light-theme-text" type="submit" name="modifyAccount" value="Modify Account">
+        </form>
         <div class="hForm card light-theme-bg-main">
             <section class="file-form">
                 <header>
@@ -23,8 +25,8 @@
                     <label>From</label>
                     <select name="originalFormat">
                         <option value="docx">docx</option>
-                        <option value="pdf" selected>pdf</option>
-                        <option value="pptx">pptx</option>
+                        <option value="RTF" selected>RTF</option>
+                        <option value="ODT" selected>ODT</option>
                     </select>
 
                     <label>To</label>

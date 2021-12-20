@@ -33,6 +33,10 @@ h1, h2 {
     margin: 10px 0;
 }
 
+.center {
+    text-align: center;
+}
+
 /* Login & Registration Forms */
 
 .login-form input[type='text'], .login-form input[type='password'],
@@ -78,7 +82,7 @@ h1, h2 {
 
 /* Download Conversion */
 
-.download-link {
+.download-link, .history {
     width: 100%;
     display: flex;    
     justify-content: center;

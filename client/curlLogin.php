@@ -2,20 +2,26 @@
     session_start();
     require "init.php";    
     include("login.html");
-
+//  785598812 -> aaa
+// $2y$10$m6l3k2b4uyumeJQeYCSeXusTFneWCmYtBrlg2I2Hj5KAAaAxAwNYq
     if(isset($_POST['login'])) {
         $result = HTTPLogin();
-        if((!is_null($result)) && password_verify($_POST['password'], $result[2])){
+        if((!is_null($result)) && password_verify('aaa', $result['password_hash'])){
+            $_SESSION['NAME'] = $result['clientName'];
             header("location: ".BASE."/curlConvert.php");
         }else{
-            var_dump(password_verify($_POST['password'], $result['password_hash']));
+            echo "client ID : ".$result['clientID']."<br/>";
+            echo "License Number : ".$_POST['license_number']."<br/>";
+            echo "Password entered : ".$_POST['password']."<br/>";
+            var_dump($result['password_hash']);           
             echo "<br/>";
-            var_dump($result['password_hash']);
-            echo "Fuck you!";
+            var_dump(password_verify($_POST['password'], $result['password_hash']));
+            echo "<br /> Nope";
         }
     } else if (isset($_POST['register'])) {
         if($_POST['password'] == $_POST['confirm_password']){
             $_SESSION['LICENSE_NUMBER'] = HTTPRegister();
+            $_SESSION['NAME'] = $_POST['username'];
             header("location: ".BASE."/curlConvert.php");
         }else{
             echo "Passwords does not match";
@@ -32,12 +38,40 @@
 
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            'Accept: application/json'
+            'Accept: application/json',
+            'Content-Type:application/json'
         ));
 
+        
         $response = curl_exec($ch);
         curl_close($ch);
-        return json_decode($response, true);
+        $result = json_decode($response, true);
+
+        echo "IN LOGIN: <br/>";
+        var_dump(password_verify($_POST['password'], $result['password_hash']));
+        echo "<br />";
+
+        return $result;
+
+        // $ch = curl_init();
+        // curl_setopt($ch, CURLOPT_URL, "http://localhost/WebServicesProject/Converter/api/client/898699643");
+        // curl_setopt($ch, CURLOPT_HTTPHEADER, array('Accept:application/json', 'Content-Type:application/json'));
+        // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        // $response = curl_exec($ch);
+        // curl_close($ch);
+        // $password = "a";
+        // $response = json_decode($response, true);
+
+        // var_dump($response['password_hash']);
+        // echo "<br>";
+        // var_dump($response[2]);
+        // echo "<br>";
+
+        // echo "Password hash: ";
+        // var_dump(password_verify($password, $response['password_hash']));
+        // echo "<br>Index 2:";
+        // var_dump(password_verify($password, $response[2]));
+        // echo "<br>";
     }
 
     function HTTPRegister(){
