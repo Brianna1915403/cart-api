@@ -92,7 +92,7 @@
             }
 
             $this->cart->update_status($carts[$cart_index]['cart_id'], $status);
-            if ($status == "Cancelled") {
+            if ($carts[$cart_index]['status'] != "Cancelled" && $status == "Cancelled") {
                 $cart = $carts[$cart_index];
                 $cart_items = explode(',', $cart['item_ids']);
                 $cart_amounts = explode(',', $cart['item_amounts']);
