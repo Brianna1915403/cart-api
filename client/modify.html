@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel='stylesheet' href='css/style.css' type='text/css'>
+    <link rel='stylesheet' href='css/utilities.css' type='text/css'>     
+    <title>Converter | Login/Register</title>
+</head>
+<body class="light-theme-bg-accent">
+    <!-- Forms -->
+    <div class="container">
+        <div class="hForm card light-theme-bg-main">
+            <?php 
+                if(isset($_GET['error'])) {
+                    echo "<div class='error'>
+                        <i class='fas fa-info-circle'></i>
+                        <span id='#error-text' style='margin-left: 5px;'>".$_GET['error']."!</span></div>";
+                }
+            ?>
+            <section class="login-form">
+                <header>
+                    <h2>Username</h2>
+                    <p>Modify your username</p>
+                </header>                
+                <form action="" method="post">
+                    <label>New Username <input type="text" name="new_username" required></label><br /><br />
+                    
+                    <input class="btn light-theme-bg-accent light-theme-text" type="submit" name="updateUsername" value="Change Username">
+                </form>
+                <footer>
+                    Having trouble login in? Maybe you don't have an account?
+                </footer>
+            </section>
+            <section class="registration-form">
+                <header>                    
+                    <h2>Password</h2>
+                    <p>Modify your password</p>
+                </header> 
+                <form action="" method="post">
+                    <label>New Password <input type="password" name="new_password" required></label><br /><br />
+                    <label>Confirm New Password <input type="password" name="confirm_new_password" required></label><br /><br />
+
+                    <input class="btn light-theme-bg-accent light-theme-text" type="submit" name="updatePassword" value="Change Password">
+                </form>
+                <footer>
+                    Having trouble registering? Open an issue on our GitHub.
+                </footer>
+            </section>
+        </div>
+    </div>
+</body>
+</html>
