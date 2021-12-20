@@ -180,11 +180,12 @@
             }
 
             if (!is_null($picture)) {
-                if (!is_null($item['picture'])) {
-                    if (!$this->delete_from_cdn($item)) {
-                        return;
-                    }
-                }
+                // CDN returns a 403 error upon trying to delete image
+                // if (!is_null($item['picture'])) {
+                //     if (!$this->delete_from_cdn($item)) {
+                //         return;
+                //     }
+                // }
                 $pic = null;
                 if (!empty($picture)) {
                     $pic = $this->put_in_cdn($picture);
@@ -208,12 +209,13 @@
             if (!$item) {
                 $this->view('errors/404');
                 return;
-            } else {                
-                if (!is_null($item['picture'])) {
-                    if (!$this->delete_from_cdn($item)) {
-                        return;
-                    }
-                }
+            } else {    
+                // CDN returns a 403 error upon trying to delete image            
+                // if (!is_null($item['picture'])) {
+                //     if (!$this->delete_from_cdn($item)) {
+                //         return;
+                //     }
+                // }
 
                 $this->item->delete($item['item_id']);
                 $this->view('index', ['status'=>http_response_code(), 'message'=>'Item Deleted']);
