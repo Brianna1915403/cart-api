@@ -14,8 +14,12 @@
             echo "Fuck you!";
         }
     } else if (isset($_POST['register'])) {
-        $_SESSION['LICENSE_NUMBER'] = HTTPRegister();
-        header("location: ".BASE."/curlConvert.php");
+        if($_POST['password'] == $_POST['confirm_password']){
+            $_SESSION['LICENSE_NUMBER'] = HTTPRegister();
+            header("location: ".BASE."/curlConvert.php");
+        }else{
+            echo "Passwords does not match";
+        }
     }
 
     function HTTPLogin(){

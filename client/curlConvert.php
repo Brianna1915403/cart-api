@@ -1,7 +1,7 @@
 <?php
     session_start();
     require "init.php";
-    echo "< center> Keep this very preciously, you will need it to login in the future: <br/> License Number = ".$_SESSION['LICENSE_NUMBER']."</ div>";
+    echo "<div style=text-align:center;> Keep this very preciously, you will need it to login in the future: <br/> License Number = ".$_SESSION['LICENSE_NUMBER']."</ div><br /><bt />";
     include("convert.html");
 
     
