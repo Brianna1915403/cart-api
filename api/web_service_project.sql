@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 17, 2021 at 04:16 PM
--- Server version: 10.4.21-MariaDB
--- PHP Version: 8.0.11
+-- Generation Time: Dec 20, 2021 at 05:41 AM
+-- Server version: 10.4.22-MariaDB
+-- PHP Version: 8.1.0
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -34,7 +34,7 @@ CREATE TABLE `cart` (
   `user_id` int(11) NOT NULL,
   `item_ids` text NOT NULL,
   `item_amounts` text NOT NULL,
-  `status` varchar(250) NOT NULL,
+  `status` enum('Preparing','Completed','Cancelled','') NOT NULL DEFAULT 'Preparing',
   `client_id` varchar(254) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -43,8 +43,8 @@ CREATE TABLE `cart` (
 --
 
 INSERT INTO `cart` (`cart_id`, `user_id`, `item_ids`, `item_amounts`, `status`, `client_id`) VALUES
-(1, 1, '1,0', '2,3', 'In Transit', 'jane'),
-(3, 2, '0', '5', 'Complete', '72');
+(1, 1, '1,0', '2,3', '', 'jane'),
+(3, 2, '0', '5', '', '72');
 
 -- --------------------------------------------------------
 
@@ -55,6 +55,7 @@ INSERT INTO `cart` (`cart_id`, `user_id`, `item_ids`, `item_amounts`, `status`, 
 CREATE TABLE `item` (
   `item_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
+  `item_index` int(11) NOT NULL,
   `item_name` varchar(250) NOT NULL,
   `description` varchar(250) DEFAULT NULL,
   `price` decimal(65,2) DEFAULT NULL,
@@ -67,10 +68,10 @@ CREATE TABLE `item` (
 -- Dumping data for table `item`
 --
 
-INSERT INTO `item` (`item_id`, `user_id`, `item_name`, `description`, `price`, `picture`, `tag`, `stock`) VALUES
-(1, 1, 'Sport Socks - 6 pack', 'Sporty socks are a great gift for any friend or family member wanting to get healthy for the holidays. After all how can one justify wearing such sporty socks, while neglecting their new years resolution!?', '3.99', '8d5a1_sportsocks6pack.png', NULL, 25),
-(2, 1, 'Cat Sock - Pink', 'The purrfect set for you feline-inclined people. ', '24.99', NULL, NULL, 100),
-(3, 2, 'An Alternative Item', 'An item that is being sold in an alternative shop.', '8.75', NULL, NULL, 35);
+INSERT INTO `item` (`item_id`, `user_id`, `item_index`, `item_name`, `description`, `price`, `picture`, `tag`, `stock`) VALUES
+(1, 1, 0, 'Sport Socks - 6 pack', 'Sporty socks are a great gift for any friend or family member wanting to get healthy for the holidays. After all how can one justify wearing such sporty socks, while neglecting their new years resolution!?', '3.99', '8d5a1_sportsocks6pack.png', NULL, 25),
+(2, 1, 1, 'Cat Sock - Pink', 'The purrfect set for you feline-inclined people. ', '24.99', NULL, NULL, 100),
+(3, 2, 0, 'An Alternative Item', 'An item that is being sold in an alternative shop.', '8.75', NULL, NULL, 35);
 
 -- --------------------------------------------------------
 
