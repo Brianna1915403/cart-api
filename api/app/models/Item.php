@@ -20,10 +20,10 @@
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
 
-        function insert($user_id, $name, $desc, $price, $picture, $tag, $stock) {
-            $query = "INSERT INTO item(user_id, item_name, description, price, picture, tag, stock) VALUES(:user_id, :item_name, :description, :price, :picture, :tag, :stock)";
+        function insert($user_id, $item_index, $name, $desc, $price, $picture, $tag, $stock) {
+            $query = "INSERT INTO item(user_id, item_index, item_name, description, price, picture, tag, stock) VALUES(:user_id, :item_index, :item_name, :description, :price, :picture, :tag, :stock)";
             $stmt = self::$connection->prepare($query);
-            $stmt->execute(["user_id" => $user_id, "item_name" => $name, "description" => $desc, "price" => $price, "picture" => $picture, "tag" => $tag, "stock" => $stock]);
+            $stmt->execute(["user_id" => $user_id, "item_index" => $item_index, "item_name" => $name, "description" => $desc, "price" => $price, "picture" => $picture, "tag" => $tag, "stock" => $stock]);
         }
 
         // --- UPDATE START ---

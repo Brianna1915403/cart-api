@@ -4,19 +4,39 @@
     include("login.html");
 
     if(isset($_POST['login'])) {
-        echo "Login Clicked";
+        $result = HTTPLogin();
+        if((!is_null($result)) && password_verify($_POST['password'], $result[2])){
+            header("location: ".BASE."/curlConvert.php");
+        }else{
+            var_dump(password_verify($_POST['password'], $result['password_hash']));
+            echo "<br/>";
+            var_dump($result['password_hash']);
+            echo "Fuck you!";
+        }
     } else if (isset($_POST['register'])) {
-        //$_SESSION['LICENSE_KEY'] = "Orphane in my basement";
-        $_SESSION['LICENSE_NUMBER'] = HTTPPostClient();
-        //echo $licenseKey."<br/>"; // 46675588
-        //$_SESSION['LICENSE_KEY'] = $licenseKey;
-        //echo $_SESSION['LICENSE_KEY'];
+        $_SESSION['LICENSE_NUMBER'] = HTTPRegister();
         header("location: ".BASE."/curlConvert.php");
     }
 
-    //license key: 5913901381
+    function HTTPLogin(){
+        $url = "http://localhost/WebServicesProject/Converter/api/client/".$_POST['license_number']; // url to login a user.
 
-    function HTTPPostClient(){
+        $_SESSION['PASSWORD'] = $_POST['password'];
+        $_SESSION['LICENSE_NUMBER'] = $_POST['license_number'];
+
+        $ch = curl_init($url);
+
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            'Accept: application/json'
+        ));
+
+        $response = curl_exec($ch);
+        curl_close($ch);
+        return json_decode($response, true);
+    }
+
+    function HTTPRegister(){
         $url = "http://localhost/WebServicesProject/Converter/api/client/create"; // url to create a user.
         
         $hash_password = password_hash($_POST['password_hash'], PASSWORD_DEFAULT);

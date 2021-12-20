@@ -75,3 +75,22 @@ h1, h2 {
     margin-top: 20px;
     color: rgb(148, 146, 146);
 }
+
+/* Download Conversion */
+
+.download-link {
+    width: 100%;
+    display: flex;    
+    justify-content: center;
+}
+
+.download-link a {
+    align-self: center;
+    border: 1px solid var(--text-colour-light);
+    border-radius: 10px;
+    padding: 5px 20px;
+}
+
+.download-link a:hover {
+    background-color: var(--main-colour-light);
+}

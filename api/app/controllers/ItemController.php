@@ -122,8 +122,12 @@
                 $S3_pic_name = $this->put_in_cdn($picture);
             }
 
+            $items = $this->item->getByUserID($user_id);
+            $item_index = $items[count($items) - 1]['item_index'];
+
             $this->item->insert(
                 $user_id, 
+                $item_index,
                 $name, 
                 $desc, 
                 is_numeric($price)? floatval($price) : 0.00, 
