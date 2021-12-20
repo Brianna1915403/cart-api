@@ -24,7 +24,7 @@
             switch ($this->verb) {
                 case "POST": $this->payload = file_get_contents("php://input"); $this->content_type = $_SERVER["CONTENT_TYPE"]; break;
                 case "PATCH": $this->payload = file_get_contents("php://input"); $this->content_type = $_SERVER["CONTENT_TYPE"]; break;
-                case "DELETE":  $this->payload = file_get_contents("php://input"); $this->content_type = $_SERVER["CONTENT_TYPE"]; break;
+                case "DELETE":  $this->payload = file_get_contents("php://input"); $this->content_type = isset($_SERVER["CONTENT_TYPE"]) ? $_SERVER["CONTENT_TYPE"] : "application/json"; break;
             }
 
             if (!is_null($this->content_type)) {

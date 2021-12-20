@@ -86,10 +86,10 @@
             // Reassiging the item_id to match what the user enters in the url so it makes more sense contextually. 
             // Unseting the user_id so the user does not have access to critical database information.
             for ($i = 0; $i < count($items); ++$i) {
-                $items[$i]['item_id'] = $i;
+                $items[$i]['item_id'] = $items[$i]['item_index'];
                 $items[$i]['price'] = floatval($items[$i]['price']);
                 $items[$i]['stock'] = intval($items[$i]['stock']);
-                unset($items[$i]['user_id']); // This is dumb... I could have just changed the query...
+                unset($items[$i]['user_id'], $items[$i]['item_index']); // This is dumb... I could have just changed the query...
                 if (!is_null($items[$i]['picture'])) {
                     $this->get_from_cdn($items[$i]);   
                 }
@@ -104,7 +104,7 @@
             $item['item_id'] = $item['item_index'];
             $item['price'] = floatval($item['price']);
             $item['stock'] = intval($item['stock']);
-            unset($item['user_id']); // This is dumb... I could have just changed the query...
+            unset($item['user_id'], $item['item_index']); // This is dumb... I could have just changed the query...
             if (!is_null($item['picture'])) {
                 $this->get_from_cdn($item);   
             }

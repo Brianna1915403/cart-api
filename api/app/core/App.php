@@ -92,13 +92,17 @@
                         break;
                     case "PATCH": // Update a user's email and password
                         if ($this->request->auth && $user) {                                    
-                            if (isset($this->request->payload['email']) && isset($this->request->payload['old_password']) && isset($this->request->payload['new_password'])) {
+                            if (isset($this->request->payload['email']) && 
+                                isset($this->request->payload['old_password']) && 
+                                isset($this->request->payload['new_password'])) {
                                 $this->controller->update_password(
                                     $this->request->payload['email'], 
                                     $this->request->payload['old_password'], 
                                     $this->request->payload['new_password']
                                 );
-                            } else if (isset($this->request->payload['old_email']) && isset($this->request->payload['new_email']) && isset($this->request->payload['password'])) {
+                            } else if (isset($this->request->payload['old_email']) && 
+                                        isset($this->request->payload['new_email']) && 
+                                        isset($this->request->payload['password'])) {
                                 $this->controller->update_email(
                                     $this->request->payload['password'], 
                                     $this->request->payload['old_email'], 
