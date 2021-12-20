@@ -1,13 +1,14 @@
 <?php
     session_start();
     require "init.php";
-    echo "< center> Keep this very preciously, you will need it to login in the future: <br/> License Number = ".$_SESSION['LICENSE_NUMBER']."</ div>";
+    echo "<div style=text-align:center;> Keep this very preciously, you will need it to login in the future: <br/> License Number = ".$_SESSION['LICENSE_NUMBER']."</ div><br /><bt />";
     include("convert.html");
 
     
-    // echo $_SESSION['LICENSE_NUMBER']."<br/>";
-    // echo $_SESSION['PASSWORD'];
-    if(isset($_POST['convertFile'])) {
+    if(isset($_POST['modifyAccount'])){
+        header("location: ".BASE."/curlModify.php");
+    }
+    else if(isset($_POST['convertFile'])) {
         echo "<div class='download-link'><a href='".HTTPPostFile()."' target='_blank' rel='noopener noreferrer'>Download</a></ div>";
         echo "<br / >";
         var_dump(HTTPGetClientHistory('file'));
