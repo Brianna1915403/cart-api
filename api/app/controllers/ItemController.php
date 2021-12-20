@@ -80,6 +80,9 @@
         }
 
         function format_items(&$items) {
+            if (is_null($items)) {
+                return;
+            }
             // Reassiging the item_id to match what the user enters in the url so it makes more sense contextually. 
             // Unseting the user_id so the user does not have access to critical database information.
             for ($i = 0; $i < count($items); ++$i) {
@@ -90,6 +93,20 @@
                 if (!is_null($items[$i]['picture'])) {
                     $this->get_from_cdn($items[$i]);   
                 }
+            }
+        }
+        
+        function format_item(&$item) {
+            if (is_null($item)) {
+                return;
+            }
+
+            $item['item_id'] = $item['item_index'];
+            $item['price'] = floatval($item['price']);
+            $item['stock'] = intval($item['stock']);
+            unset($item['user_id']); // This is dumb... I could have just changed the query...
+            if (!is_null($item['picture'])) {
+                $this->get_from_cdn($item);   
             }
         }
         
@@ -105,13 +122,13 @@
         }
 
         function get_one($user_id, $item_index) {
-            $items = $this->item->getByUserID($user_id);
+            $item = $this->item->getByIndex($user_id, $item_index);
             
-            $this->format_items($items);
+            $this->format_item($item);
 
             $this->view('index', [
                 'status' => http_response_code(),
-                'item' => ((!$items || (count($items) - 1) < $item_index || $item_index < 0) ? null : $items[$item_index])
+                'item' => ($item)
             ]);
         }
 
@@ -123,7 +140,7 @@
             }
 
             $items = $this->item->getByUserID($user_id);
-            $item_index = $items[count($items) - 1]['item_index'];
+            $item_index = $items[count($items) - 1]['item_index'] + 1;
 
             $this->item->insert(
                 $user_id, 
@@ -141,14 +158,14 @@
         }
 
         function update($user_id, $item_index, $name = null, $desc = null, $price = null, $picture = null, $tag = null, $stock = null) {
-            $items = $this->item->getByUserID($user_id);
+            $item = $this->item->getByIndex($user_id, $item_index);
             
-            if (!$items || (count($items) - 1) < $item_index || $item_index < 0) {
+            if (is_null($item)) {
                 $this->view('errors/404');
                 return;
             }
 
-            $item_id = $items[$item_index]['item_id'];
+            $item_id = $item['item_id'];
 
             if (!is_null($name) && !empty($name)) {
                 $this->item->update_item_name($item_id, $name);
@@ -163,8 +180,8 @@
             }
 
             if (!is_null($picture)) {
-                if (!is_null($items[$item_index]['picture'])) {
-                    if (!$this->delete_from_cdn($items[$item_index])) {
+                if (!is_null($item['picture'])) {
+                    if (!$this->delete_from_cdn($item)) {
                         return;
                     }
                 }
@@ -187,13 +204,11 @@
         }
 
         function delete($user_id, $item_index) {
-            $items = $this->item->getByUserID($user_id);
-            if (!$items || (count($items) - 1) < $item_index || $item_index < 0) {
+            $item = $this->item->getByIndex($user_id, $item_index);
+            if (!$item) {
                 $this->view('errors/404');
                 return;
-            } else {
-                $item = $items[$item_index];
-                
+            } else {                
                 if (!is_null($item['picture'])) {
                     if (!$this->delete_from_cdn($item)) {
                         return;

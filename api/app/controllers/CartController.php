@@ -15,14 +15,13 @@
         }
 
         function format_cart_items(&$cart) {
-            $user_items = $this->item->getByUserID($cart['user_id']);
             $items = explode(',', $cart['item_ids']);
             $item_amounts = explode(',', $cart['item_amounts']);
 
             $item_list = array();
             for ($i = 0; $i < count($items); ++$i) {
                 $it = [];
-                $user_item = $user_items[$items[$i]];
+                $user_item = $this->item->getByIndex($cart['user_id'], $items[$i]);
                 $it['item_name'] = $user_item['item_name'];
                 $it['price'] = floatval($user_item['price']);
                 $it['amount'] = intval($item_amounts[$i]);
@@ -44,7 +43,7 @@
             }
 
             if (isset($param['client_id'])) {
-                
+                // filter out cart w/ none matching client_ids
             }
 
             $this->view('index', ['status' => http_response_code(), 'carts' => $carts]);
@@ -65,18 +64,17 @@
         }
         
         function insert($user_id, $item_id, $amount, $status, $client_id) {
-            $items = $this->item->getByUserID($user_id);
-            if ((is_null($items) || (count($items) - 1) < $item_id || $item_id < 0) || 
-                ($amount <= 0 || $amount > $items[$item_id]['stock']) ||
+            $item = $this->item->getByIndex($user_id, $item_id);
+            if (is_null($item) || ($amount <= 0 || $amount > $item['stock']) ||
                 !($status == "Preparing" || $status == "Completed" || $status == "Cancelled")) {
                 $this->view('errors/400');
                 return;
             }
+            
             // If cart status is preparing or complete you reduce the stock from the original item
             // If the cart status is cancelled then return/don't take off the item amount to stock 
-
             if ($status == "Preparing" || $status == "Completed") {
-                $this->item->update_stock($items[$item_id]['item_id'], $items[$item_id]['stock'] - $amount);
+                $this->item->update_stock($item['item_id'], $item['stock'] - $amount);
             }
             
             $this->cart->insert($user_id, $item_id, $amount, $status, $client_id);
@@ -108,10 +106,10 @@
 
         function update_contents($user_id, $cart_index, $item_id, $amount) {
             $carts = $this->cart->getByUserID($user_id);
-            $items = $this->item->getByUserID($user_id);
+            $item = $this->item->getByIndex($user_id, $item_id);
             if (is_null($carts) || (count($carts) - 1) < $cart_index || $cart_index < 0) {
                 $this->view('errors/404');
-            } else if (is_null($items) || (count($items) - 1) < $item_id || $item_id < 0) {
+            } else if (is_null($item)) {
                 $this->view('errors/404');
             }
 
@@ -123,14 +121,14 @@
                 for ($i = 0; $i < count($cart_items); ++$i) {
                     if ($cart_items[$i] == $item_id) {
                         if($amount <= 0) { // Remove from list     
-                            $this->item->update_stock($items[$item_id]['item_id'], $items[$item_id]['stock'] + $cart_amounts[$i]);                       
+                            $this->item->update_stock($item['item_id'], $item['stock'] + $cart_amounts[$i]);                       
                             unset($cart_items[$i], $cart_amounts[$i]);
                         } else {                            
-                            if ($amount > $items[$item_id]['stock']) {
+                            if ($amount > $item['stock']) {
                                 $this->view('errors/400');
                                 return;
                             } else {
-                                $this->item->update_stock($items[$item_id]['item_id'], $items[$item_id]['stock'] - $amount);
+                                $this->item->update_stock($item['item_id'], $item['stock'] - $amount);
                                 $cart_amounts[$i] = $amount;
                             }
                         }
@@ -139,7 +137,7 @@
                 }
             } else {
                 // Add the item w/ amount
-                if ($amount > $items[$item_id]['stock']) {
+                if ($amount > $item['stock']) {
                     $this->view('errors/400');
                     return;
                 } else {

@@ -20,6 +20,14 @@
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
 
+        function getByIndex($user_id, $item_index) {
+            $query = "SELECT * FROM item WHERE item_index = :item_index AND user_id = :user_id";
+            $stmt = self::$connection->prepare($query);
+            $stmt->execute(["item_index"=>$item_index, "user_id"=>$user_id]);
+
+            return $stmt->fetch();
+        }
+
         function insert($user_id, $item_index, $name, $desc, $price, $picture, $tag, $stock) {
             $query = "INSERT INTO item(user_id, item_index, item_name, description, price, picture, tag, stock) VALUES(:user_id, :item_index, :item_name, :description, :price, :picture, :tag, :stock)";
             $stmt = self::$connection->prepare($query);
