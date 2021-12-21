@@ -9,6 +9,9 @@
     if(isset($_POST['modifyAccount'])){
         header("location: ".BASE."/curlModify.php");
     }
+    else if(isset($_POST['logOut'])){
+        header("location: ".BASE."/curlLogin.php");
+    }
     else if(isset($_POST['convertFile'])) {
         echo "<div class='download-link'><a href='".HTTPPostFile()."' target='_blank' rel='noopener noreferrer'>Download</a></div>";
         echo "<br /><br /><br />";

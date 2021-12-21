@@ -21,6 +21,9 @@
             echo $result;
         }
     }
+    else if(isset($_POST['logOut'])){
+        header("location: ".BASE."/curlLogin.php");
+    }
 
     function HTTPUpdateUsername(){
         $url = "http://localhost/WebServicesProject/Converter/api/client/name";
